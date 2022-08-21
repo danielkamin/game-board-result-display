@@ -14,6 +14,8 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import GameBoardEventHandler from './gameBoardEventHandler';
+import GameBoardServerClient from './gameBoardServerClient';
 
 class AppUpdater {
   constructor() {
@@ -72,7 +74,7 @@ const createWindow = async () => {
   mainWindow = new BrowserWindow({
     show: false,
     width: 1024,
-    height: 728,
+    height: 400,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       sandbox: false,
@@ -102,6 +104,13 @@ const createWindow = async () => {
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 
+  const gameBoardEventHandler = new GameBoardEventHandler(mainWindow);
+  gameBoardEventHandler.init();
+  const gameBoardServerClient = new GameBoardServerClient(
+    gameBoardEventHandler
+  );
+  gameBoardServerClient.init();
+
   // Open urls in the user's browser
   mainWindow.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);
@@ -130,6 +139,7 @@ app
   .then(() => {
     createWindow();
     app.on('activate', () => {
+      console.log('activate app');
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
       if (mainWindow === null) createWindow();
