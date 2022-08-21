@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import dgram from 'node:dgram';
 import { IGameBoardEventHandler } from './gameBoardEventHandler';
 
@@ -6,7 +7,7 @@ const SERVER_ADDRESS = '192.168.1.255';
 export interface IGameBoardServerClient {
   bindListeners: () => void;
   init: () => void;
-  formatBufferMessage: (msg: Buffer) => void;
+  // formatBufferMessage: (msg: Buffer) => void;
 }
 
 export default class GameBoardServerClient implements IGameBoardServerClient {
@@ -36,13 +37,13 @@ export default class GameBoardServerClient implements IGameBoardServerClient {
     });
     this.server.on('message', (msg, rinfo) => {
       console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-      this.formatBufferMessage(msg);
+      // this.formatBufferMessage(msg);
     });
   }
 
-  formatBufferMessage(msg: Buffer): void {
-    console.log(msg.toString());
-  }
+  // formatBufferMessage(msg: Buffer): void {
+  //   console.log(msg.toString());
+  // }
 }
 
 const availableGameBoardCommands = {
