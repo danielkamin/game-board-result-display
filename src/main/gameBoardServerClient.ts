@@ -30,14 +30,14 @@ export default class GameBoardServerClient implements IGameBoardServerClient {
       console.log(`Server error:\n${err.stack}`);
       this.server.close();
     });
+    this.server.on('message', (msg) => {
+      console.log(`server got: ${msg}`);
+      // this.formatBufferMessage(msg);
+    });
     this.server.on('listening', () => {
       const address = this.server.address();
       console.log('Connection to game board udp server live!');
       console.log(`Server listening ${address.address}:${address.port}`);
-    });
-    this.server.on('message', (msg, rinfo) => {
-      console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-      // this.formatBufferMessage(msg);
     });
   }
 

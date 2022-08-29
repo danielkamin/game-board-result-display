@@ -7,7 +7,10 @@ export interface IGameBoardEventHandler {
   init: () => void;
   sendHomeTeamScoreData: (points: string) => void;
   sendAwayTeamScoreData: (points: string) => void;
-  sendGameClockData: (minutes: string, seconds: string) => void;
+  sendGameClockMinutes: (minutes: string) => void;
+  sendGameClockSeconds: (seconds: string) => void;
+  sendAdditionalGameClockData: (seconds: string) => void;
+  sendGamePartData: (gamePart: string) => void;
 }
 
 export default class GameBoardEventHandler implements IGameBoardEventHandler {
@@ -15,6 +18,20 @@ export default class GameBoardEventHandler implements IGameBoardEventHandler {
 
   constructor(mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow;
+  }
+
+  sendAdditionalGameClockData(seconds = '24'): void {
+    this.mainWindow.webContents.send(
+      EGameBoardDisplayChannels.additionalClockChannel,
+      seconds
+    );
+  }
+
+  sendGamePartData(gamePart: string): void {
+    this.mainWindow.webContents.send(
+      EGameBoardDisplayChannels.gamePartChannel,
+      gamePart
+    );
   }
 
   sendHomeTeamScoreData(points = '0'): void {
@@ -31,10 +48,17 @@ export default class GameBoardEventHandler implements IGameBoardEventHandler {
     );
   }
 
-  sendGameClockData(minutes = '00', seconds = '00'): void {
+  sendGameClockMinutes(minutes = '00'): void {
     this.mainWindow.webContents.send(
-      EGameBoardDisplayChannels.gameClockDataChannel,
-      `${minutes}:${seconds}`
+      EGameBoardDisplayChannels.gameClockMinutesChannel,
+      `${minutes}`
+    );
+  }
+
+  sendGameClockSeconds(seconds = '00'): void {
+    this.mainWindow.webContents.send(
+      EGameBoardDisplayChannels.gameClockMinutesChannel,
+      `${seconds}`
     );
   }
 

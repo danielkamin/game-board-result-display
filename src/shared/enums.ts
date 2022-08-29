@@ -3,5 +3,8 @@ export enum EGameBoardDisplayChannels {
   testChannel = 'test-channel',
   homeTeamPointsChannel = 'home-team-points',
   awayTeamPointsChannel = 'away-team-points',
-  gameClockDataChannel = 'game-clock-data',
+  gameClockSecondsChannel = 'game-clock-seconds',
+  gameClockMinutesChannel = 'game-clock-minutes',
+  additionalClockChannel = 'additional-clock',
+  gamePartChannel = 'game-part-clock',
 }
