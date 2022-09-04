@@ -13,7 +13,7 @@ const ScoreBoard = () => {
   //   console.log(arg);
   // });
   return (
-    <main className="border border-white bg-black border-t-2 h-full opacity-70">
+    <main className="border border-white bg-black border-t-2 h-full">
       <section className="flex gap-5 p-4 text-white text-3xl ">
         <div className="flex items-center w-1/3">
           <img

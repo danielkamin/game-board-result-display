@@ -31,9 +31,10 @@ export default class GameBoardServerClient implements IGameBoardServerClient {
       this.server.close();
     });
     this.server.on('message', (msg) => {
-      debounce(() => {
-        this.gameBoardCommandHandler.handleBufferMessage(Buffer.from(msg));
-      }, 500);
+      debounce(
+        this.gameBoardCommandHandler.handleBufferMessage(Buffer.from(msg)),
+        500
+      );
     });
     this.server.on('listening', () => {
       const address = this.server.address();
