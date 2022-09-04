@@ -5,3 +5,11 @@
  @tailwind base;
  @tailwind components;
  @tailwind utilities;
+
+ html, body, #root{
+    height: 100%;
+ }
+
+ .team-logo{
+     max-width: 70px;
+ }

@@ -16,6 +16,7 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import GameBoardEventHandler from './gameBoardEventHandler';
 import GameBoardServerClient from './gameBoardServerClient';
+import GameBoardCommandHandler from './gameBoardCommandHandlers';
 
 class AppUpdater {
   constructor() {
@@ -106,8 +107,12 @@ const createWindow = async () => {
 
   const gameBoardEventHandler = new GameBoardEventHandler(mainWindow);
   gameBoardEventHandler.init();
-  const gameBoardServerClient = new GameBoardServerClient(
+  const gameBoardCommandHandler = new GameBoardCommandHandler(
     gameBoardEventHandler
+  );
+
+  const gameBoardServerClient = new GameBoardServerClient(
+    gameBoardCommandHandler
   );
   gameBoardServerClient.init();
 

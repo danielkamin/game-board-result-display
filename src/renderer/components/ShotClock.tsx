@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { EGameBoardDisplayChannels } from 'shared/enums';
 
-const AdditionalClock: FC = () => {
+const ShotClock: FC = () => {
   const [seconds, setSeconds] = useState('24');
 
   window.electron.ipcRenderer.on(
@@ -12,7 +12,7 @@ const AdditionalClock: FC = () => {
     }
   );
 
-  return <div>{seconds}</div>;
+  return <div className="text-yellow-400">{seconds}</div>;
 };
 
-export default AdditionalClock;
+export default ShotClock;

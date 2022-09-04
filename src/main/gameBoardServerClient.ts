@@ -1,27 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import dgram from 'node:dgram';
-import { IGameBoardEventHandler } from './gameBoardEventHandler';
+import debounce from 'debounce';
+
+import { IGameBoardCommandHandler } from './gameBoardCommandHandlers';
 
 const SERVER_PORT = 2001;
-const SERVER_ADDRESS = '192.168.1.255';
 export interface IGameBoardServerClient {
   bindListeners: () => void;
   init: () => void;
-  // formatBufferMessage: (msg: Buffer) => void;
 }
 
 export default class GameBoardServerClient implements IGameBoardServerClient {
   private server: dgram.Socket = dgram.createSocket('udp4');
 
-  private gameBoardEventHandler: IGameBoardEventHandler;
+  private gameBoardCommandHandler: IGameBoardCommandHandler;
 
-  constructor(gameBoardEventHandler: IGameBoardEventHandler) {
-    this.gameBoardEventHandler = gameBoardEventHandler;
+  constructor(gameBoardCommandHandler: IGameBoardCommandHandler) {
+    this.gameBoardCommandHandler = gameBoardCommandHandler;
   }
 
   init(): void {
-    this.server.bind(SERVER_PORT, SERVER_ADDRESS);
     this.bindListeners();
+    this.server.bind(SERVER_PORT);
   }
 
   bindListeners(): void {
@@ -31,8 +31,9 @@ export default class GameBoardServerClient implements IGameBoardServerClient {
       this.server.close();
     });
     this.server.on('message', (msg) => {
-      console.log(`server got: ${msg}`);
-      // this.formatBufferMessage(msg);
+      debounce(() => {
+        this.gameBoardCommandHandler.handleBufferMessage(Buffer.from(msg));
+      }, 500);
     });
     this.server.on('listening', () => {
       const address = this.server.address();
@@ -40,27 +41,4 @@ export default class GameBoardServerClient implements IGameBoardServerClient {
       console.log(`Server listening ${address.address}:${address.port}`);
     });
   }
-
-  // formatBufferMessage(msg: Buffer): void {
-  //   console.log(msg.toString());
-  // }
 }
-
-const availableGameBoardCommands = {
-  empty: 0xf0, // rozkaz pusty "nie rób nic"
-  deviceStateChange: 0xf1, // uruchomienie, wyłączenie, zmiana stanu urządzenia (np. syreny)
-  setRealTimeClockData: 0xf2, // ustawienie zegara czasu rzeczywistego
-  diagnosticFunctions: 0xf3, // funkcje diagnostyczne
-  gameClockData: 0xf4, // zegar czasu gry
-  timeOutClockData: 0xf5, // zegar dodatkowy (Time Out)
-  shotClockData: 0xf6, // zegar 24s
-  teamsFoulsData: 0xf7, // sety lub przewinienia drużyny
-  gameAdditionalInfoData: 0xf8, // zagrywka, czasy trenera, sety lub przewinienia oraz część meczu
-  teamsPointsData: 0xf9, // punkty drużyny A i drużyny B
-  gamePartsPointsData: 0xfa, // wyniki części meczu (setów, kwart)
-  violationsClocksData: 0xfb, // zegary kar - NIE UŻYWANE
-  playerGameData: 0xfc, // numer zawodnika, punkty, przewinienia
-  empty1: 0xfd, // rezerwa
-  empty2: 0xfe, // rezerwa
-  empty3: 0xff, // rezerwa
-};

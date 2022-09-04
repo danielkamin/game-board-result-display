@@ -9,7 +9,7 @@ export interface IGameBoardEventHandler {
   sendAwayTeamScoreData: (points: string) => void;
   sendGameClockMinutes: (minutes: string) => void;
   sendGameClockSeconds: (seconds: string) => void;
-  sendAdditionalGameClockData: (seconds: string) => void;
+  sendShotClockData: (seconds: string) => void;
   sendGamePartData: (gamePart: string) => void;
 }
 
@@ -20,14 +20,14 @@ export default class GameBoardEventHandler implements IGameBoardEventHandler {
     this.mainWindow = mainWindow;
   }
 
-  sendAdditionalGameClockData(seconds = '24'): void {
+  sendShotClockData(seconds = '24'): void {
     this.mainWindow.webContents.send(
       EGameBoardDisplayChannels.additionalClockChannel,
       seconds
     );
   }
 
-  sendGamePartData(gamePart: string): void {
+  sendGamePartData(gamePart = '0'): void {
     this.mainWindow.webContents.send(
       EGameBoardDisplayChannels.gamePartChannel,
       gamePart
