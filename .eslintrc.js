@@ -8,6 +8,8 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'no-underscore-dangle': 'off',
     'no-console': 'off',
+    'dot-notation': 'off',
+    '@typescript-eslint/dot-notation': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,

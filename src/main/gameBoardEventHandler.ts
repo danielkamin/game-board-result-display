@@ -4,7 +4,6 @@ import { BrowserWindow } from 'electron';
 import { EGameBoardDisplayChannels } from '../shared/enums';
 
 export interface IGameBoardEventHandler {
-  init: () => void;
   sendHomeTeamScoreData: (points: string) => void;
   sendAwayTeamScoreData: (points: string) => void;
   sendGameClockMinutes: (minutes: string) => void;
@@ -28,6 +27,7 @@ export default class GameBoardEventHandler implements IGameBoardEventHandler {
   }
 
   sendGamePartData(gamePart = '0'): void {
+    console.log(gamePart);
     this.mainWindow.webContents.send(
       EGameBoardDisplayChannels.gamePartChannel,
       gamePart
@@ -48,24 +48,18 @@ export default class GameBoardEventHandler implements IGameBoardEventHandler {
     );
   }
 
-  sendGameClockMinutes(minutes = '00'): void {
+  sendGameClockMinutes(minutes = '0'): void {
     this.mainWindow.webContents.send(
       EGameBoardDisplayChannels.gameClockMinutesChannel,
       `${minutes}`
     );
   }
 
-  sendGameClockSeconds(seconds = '00'): void {
+  sendGameClockSeconds(seconds = '0'): void {
+    const sec = seconds.length === 1 ? `0${seconds}` : seconds;
     this.mainWindow.webContents.send(
-      EGameBoardDisplayChannels.gameClockMinutesChannel,
-      `${seconds}`
-    );
-  }
-
-  init(): void {
-    this.mainWindow.webContents.send(
-      EGameBoardDisplayChannels.testChannel,
-      'GameBoardEventHandler is live!'
+      EGameBoardDisplayChannels.gameClockSecondsChannel,
+      sec
     );
   }
 }

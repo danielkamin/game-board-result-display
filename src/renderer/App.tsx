@@ -1,52 +1,46 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import { EGameBoardDisplayChannels } from 'shared/enums';
+import { useState } from 'react';
+
+import { TAppConfig } from 'shared/types';
 import './App.css';
 import GameClock from './components/GameClock';
 import Points from './components/Points';
-import HomeTeamLogo from '../../assets/scoreboard/home.png';
 import Divider from './components/Divider';
 import GamePart from './components/GamePart';
 import ShotClock from './components/ShotClock';
+import HomeTeam from './components/HomeTeam';
+import AwayTeam from './components/AwayTeam';
 
 const ScoreBoard = () => {
-  // window.electron.ipcRenderer.on('ipc-test', (arg) => {
-  //   console.log(arg);
-  // });
+  const [teamsConfig, setTeamsConfig] = useState<any>();
+  window.electron.ipcRenderer.on('config', (arg) => {
+    const appConfig = JSON.parse(arg as string) as TAppConfig;
+    setTeamsConfig(appConfig);
+  });
+
   return (
-    <main className="border border-white bg-black border-t-2 h-full">
-      <section className="flex gap-5 p-4 text-white text-3xl ">
-        <div className="flex items-center w-1/3">
-          <img
-            src={HomeTeamLogo}
-            alt="Żubry Białystok"
-            className="ml-4 team-logo"
-          />
-          <div className="mx-4">ZUB</div>
-          <div className="mx-16">
+    <main className="bg-black h-full">
+      <section className="flex py-2 text-white text-5xl">
+        <div className="flex items-center justify-around w-2/5">
+          <HomeTeam />
+          <div className="mx-2">
             <Points channel={EGameBoardDisplayChannels.homeTeamPointsChannel} />
           </div>
           <Divider />
         </div>
-        <div className="flex items-center w-1/3">
-          <img
-            src={HomeTeamLogo}
-            alt="Żubry Białystok"
-            className="ml-4 team-logo"
-          />
-          <div className="mx-4">ZUB</div>
-
-          <div className="mx-16">
+        <div className="flex items-center justify-around w-2/5">
+          <div className="mx-2">
             <Points channel={EGameBoardDisplayChannels.awayTeamPointsChannel} />
           </div>
+          <AwayTeam />
           <Divider />
         </div>
-        <div className="flex w-1/3 justify-around items-center">
+        <div className="flex w-1/4 justify-around items-center">
           <GamePart />
           <Divider height="50%" />
-
           <GameClock />
           <Divider height="50%" />
-
           <ShotClock />
         </div>
       </section>

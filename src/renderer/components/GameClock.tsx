@@ -22,7 +22,7 @@ const GameClock: FC = () => {
   );
 
   return (
-    <div>
+    <div className="w-24 flex justify-center text-3xl">
       <span>{minutes}</span>:<span>{seconds}</span>
     </div>
   );

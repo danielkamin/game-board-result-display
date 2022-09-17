@@ -10,7 +10,12 @@ const Points: FC<IPoints> = ({ channel }) => {
     const pointsData = arg as string;
     if (pointsData !== points) setPoints(pointsData);
   });
-  return <div className="text-4xl font-semibold">{points}</div>;
+
+  return (
+    <div className="text-5xl font-semibold w-20 flex justify-center">
+      <span>{points}</span>
+    </div>
+  );
 };
 
 export default Points;

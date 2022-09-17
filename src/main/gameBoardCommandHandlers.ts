@@ -1,6 +1,6 @@
 import { Buffer } from 'node:buffer';
 import commands from './gameBoardCommands';
-import { IGameBoardEventHandler } from './gameBoardEventHandler';
+import GameBoardEventHandler from './gameBoardEventHandler';
 
 export interface IGameBoardCommandHandler {
   handleBufferMessage: (msgBuffer: Buffer) => void;
@@ -13,26 +13,37 @@ export interface IGameBoardCommandHandler {
 export default class GameBoardCommandHandler
   implements IGameBoardCommandHandler
 {
-  private gameBoardEventHandler: IGameBoardEventHandler;
+  gameBoardEventHandler: GameBoardEventHandler;
 
-  constructor(gameBoardEventHandler: IGameBoardEventHandler) {
+  constructor(gameBoardEventHandler: GameBoardEventHandler) {
     this.gameBoardEventHandler = gameBoardEventHandler;
   }
 
-  private commandHandlers = {
-    [commands.gameClockData]: this.displayMainClockHandler,
-    [commands.teamsPointsData]: this.displayScoreHandler,
-    [commands.shotClockData]: this.displayShotClockHandler,
-    [commands.gamePartsData]: this.displayGamePartHandler,
-  };
-
   handleBufferMessage(msgBuffer: Buffer) {
-    if (this.commandHandlers[msgBuffer[0]]) {
-      this.commandHandlers[msgBuffer[0]](msgBuffer);
+    if (msgBuffer[0]) {
+      switch (msgBuffer[0]) {
+        case commands.gameAdditionalInfoData:
+          this.displayGamePartHandler(msgBuffer);
+          break;
+        case commands.gameClockData:
+          this.displayMainClockHandler(msgBuffer);
+          break;
+
+        case commands.shotClockData:
+          this.displayShotClockHandler(msgBuffer);
+          break;
+        case commands.teamsPointsData:
+          this.displayScoreHandler(msgBuffer);
+          break;
+
+        default:
+          break;
+      }
     }
   }
 
   displayGamePartHandler(msgBuffer: Buffer) {
+    console.log(msgBuffer);
     this.gameBoardEventHandler.sendGamePartData(msgBuffer[3].toString());
   }
 

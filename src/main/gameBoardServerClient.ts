@@ -15,8 +15,14 @@ export default class GameBoardServerClient implements IGameBoardServerClient {
 
   private gameBoardCommandHandler: IGameBoardCommandHandler;
 
+  private debounceHandleBufferMessage;
+
   constructor(gameBoardCommandHandler: IGameBoardCommandHandler) {
     this.gameBoardCommandHandler = gameBoardCommandHandler;
+    this.debounceHandleBufferMessage = debounce(
+      this.gameBoardCommandHandler.handleBufferMessage,
+      500
+    );
   }
 
   init(): void {
@@ -31,10 +37,7 @@ export default class GameBoardServerClient implements IGameBoardServerClient {
       this.server.close();
     });
     this.server.on('message', (msg) => {
-      debounce(
-        this.gameBoardCommandHandler.handleBufferMessage(Buffer.from(msg)),
-        500
-      );
+      this.debounceHandleBufferMessage(Buffer.from(msg));
     });
     this.server.on('listening', () => {
       const address = this.server.address();

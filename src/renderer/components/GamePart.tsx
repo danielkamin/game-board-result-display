@@ -8,11 +8,16 @@ const GamePart: FC = () => {
   window.electron.ipcRenderer.on(
     EGameBoardDisplayChannels.gamePartChannel,
     (arg) => {
+      console.log(arg);
       const gamePartData = arg as TGamePart;
       if (gamePartData !== part) setPart(gamePartData);
     }
   );
-  return <div>Q {part}</div>;
+  return (
+    <div className="w-11 flex justify-center text-3xl">
+      <span>Q {part}</span>
+    </div>
+  );
 };
 
 export default GamePart;
