@@ -1,3 +1,4 @@
+import debounce from 'debounce';
 import { Buffer } from 'node:buffer';
 import commands from './gameBoardCommands';
 import GameBoardEventHandler from './gameBoardEventHandler';
@@ -15,35 +16,38 @@ export default class GameBoardCommandHandler
 {
   gameBoardEventHandler: GameBoardEventHandler;
 
+  debounceHandleBufferMessage;
+
   constructor(gameBoardEventHandler: GameBoardEventHandler) {
     this.gameBoardEventHandler = gameBoardEventHandler;
+
+    this.debounceHandleBufferMessage = debounce(
+      this.handleBufferMessage,
+      10,
+      true
+    );
   }
 
   handleBufferMessage(msgBuffer: Buffer) {
-    if (msgBuffer[0]) {
-      switch (msgBuffer[0]) {
-        case commands.gameAdditionalInfoData:
-          this.displayGamePartHandler(msgBuffer);
-          break;
-        case commands.gameClockData:
-          this.displayMainClockHandler(msgBuffer);
-          break;
-
-        case commands.shotClockData:
-          this.displayShotClockHandler(msgBuffer);
-          break;
-        case commands.teamsPointsData:
-          this.displayScoreHandler(msgBuffer);
-          break;
-
-        default:
-          break;
-      }
+    switch (msgBuffer[0]) {
+      case commands.gameAdditionalInfoData:
+        this.displayGamePartHandler(msgBuffer);
+        break;
+      case commands.gameClockData:
+        this.displayMainClockHandler(msgBuffer);
+        break;
+      case commands.shotClockData:
+        this.displayShotClockHandler(msgBuffer);
+        break;
+      case commands.teamsPointsData:
+        this.displayScoreHandler(msgBuffer);
+        break;
+      default:
+        break;
     }
   }
 
   displayGamePartHandler(msgBuffer: Buffer) {
-    console.log(msgBuffer);
     this.gameBoardEventHandler.sendGamePartData(msgBuffer[3].toString());
   }
 

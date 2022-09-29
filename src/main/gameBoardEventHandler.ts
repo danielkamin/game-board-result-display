@@ -27,7 +27,6 @@ export default class GameBoardEventHandler implements IGameBoardEventHandler {
   }
 
   sendGamePartData(gamePart = '0'): void {
-    console.log(gamePart);
     this.mainWindow.webContents.send(
       EGameBoardDisplayChannels.gamePartChannel,
       gamePart

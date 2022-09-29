@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import dgram from 'node:dgram';
-import debounce from 'debounce';
 
-import { IGameBoardCommandHandler } from './gameBoardCommandHandlers';
+import GameBoardCommandHandler, {
+  IGameBoardCommandHandler,
+} from './gameBoardCommandHandlers';
 
 const SERVER_PORT = 2001;
 export interface IGameBoardServerClient {
@@ -13,16 +14,11 @@ export interface IGameBoardServerClient {
 export default class GameBoardServerClient implements IGameBoardServerClient {
   private server: dgram.Socket = dgram.createSocket('udp4');
 
-  private gameBoardCommandHandler: IGameBoardCommandHandler;
+  private gameBoardCommandHandler: GameBoardCommandHandler;
 
-  private debounceHandleBufferMessage;
-
-  constructor(gameBoardCommandHandler: IGameBoardCommandHandler) {
+  constructor(gameBoardCommandHandler: GameBoardCommandHandler) {
     this.gameBoardCommandHandler = gameBoardCommandHandler;
-    this.debounceHandleBufferMessage = debounce(
-      this.gameBoardCommandHandler.handleBufferMessage,
-      500
-    );
+    this.init();
   }
 
   init(): void {
@@ -37,7 +33,9 @@ export default class GameBoardServerClient implements IGameBoardServerClient {
       this.server.close();
     });
     this.server.on('message', (msg) => {
-      this.debounceHandleBufferMessage(Buffer.from(msg));
+      this.gameBoardCommandHandler.debounceHandleBufferMessage(
+        Buffer.from(msg)
+      );
     });
     this.server.on('listening', () => {
       const address = this.server.address();

@@ -112,7 +112,6 @@ const createWindow = async () => {
   const gameBoardServerClient = new GameBoardServerClient(
     gameBoardCommandHandler
   );
-  gameBoardServerClient.init();
 
   // Open urls in the user's browser
   mainWindow.webContents.setWindowOpenHandler((edata) => {
