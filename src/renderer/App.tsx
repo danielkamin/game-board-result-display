@@ -14,14 +14,14 @@ const ScoreBoard = () => {
   return (
     <main className="bg-black h-full">
       <section className="flex py-2 text-white text-5xl">
-        <div className="flex items-center justify-around w-2/5">
+        <div className="flex items-end justify-around w-2/5">
           <HomeTeam />
           <div className="mx-2">
             <Points channel={EGameBoardDisplayChannels.homeTeamPointsChannel} />
           </div>
           <Divider />
         </div>
-        <div className="flex items-center justify-around w-2/5">
+        <div className="flex items-end justify-around w-2/5">
           <div className="mx-2">
             <Points channel={EGameBoardDisplayChannels.awayTeamPointsChannel} />
           </div>
