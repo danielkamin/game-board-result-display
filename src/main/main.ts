@@ -22,11 +22,15 @@ let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('startup', async (event) => {
   const appPath = app.getAppPath();
-  const filePath =
-    process.env.NODE_ENV === 'production'
-      ? '../../../../config.json'
-      : 'config.json';
-
+  let filePath = '';
+  if (process.env.NODE_ENV === 'production') {
+    filePath =
+      process.platform === 'win32'
+        ? '../../config.json'
+        : '../../../../config.json';
+  } else {
+    filePath = 'config.json';
+  }
   const teamsConfig = fs.readFileSync(path.join(appPath, filePath)).toString();
   event.reply('config', teamsConfig);
 });
@@ -72,7 +76,7 @@ const createWindow = async () => {
   mainWindow = new BrowserWindow({
     show: false,
     width: 900,
-    height: 110,
+    height: 160,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       sandbox: false,

@@ -23,7 +23,7 @@ export default class GameBoardServerClient implements IGameBoardServerClient {
 
   init(): void {
     this.bindListeners();
-    this.server.bind(SERVER_PORT);
+    this.server.bind(2001);
   }
 
   bindListeners(): void {

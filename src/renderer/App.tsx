@@ -1,8 +1,6 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import { EGameBoardDisplayChannels } from 'shared/enums';
-import { useState } from 'react';
 
-import { TAppConfig } from 'shared/types';
 import './App.css';
 import GameClock from './components/GameClock';
 import Points from './components/Points';
@@ -13,12 +11,6 @@ import HomeTeam from './components/HomeTeam';
 import AwayTeam from './components/AwayTeam';
 
 const ScoreBoard = () => {
-  const [teamsConfig, setTeamsConfig] = useState<any>();
-  window.electron.ipcRenderer.on('config', (arg) => {
-    const appConfig = JSON.parse(arg as string) as TAppConfig;
-    setTeamsConfig(appConfig);
-  });
-
   return (
     <main className="bg-black h-full">
       <section className="flex py-2 text-white text-5xl">

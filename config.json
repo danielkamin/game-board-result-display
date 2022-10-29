@@ -1,10 +1,10 @@
 {
   "Away": {
-    "image": "/Users/danielkaminski/Desktop/team logos/sokol.jpeg",
-    "name": "ostrow"
+    "image": "C:/Users/User/Desktop/Live/legion.jpg",
+    "name": "legion"
   },
   "Home": {
-    "image": "/Users/danielkaminski/Desktop/team logos/znicz.png",
-    "name": "pruszkow"
+    "image": "C:/Users/User/Desktop/Live/icon.png",
+    "name": "zubry"
   }
 }
