@@ -7,8 +7,12 @@ interface IPoints {
 const Points: FC<IPoints> = ({ channel }) => {
   const [points, setPoints] = useState('0');
   window.electron.ipcRenderer.on(channel, (arg) => {
-    const pointsData = arg as string;
-    if (pointsData !== points) setPoints(pointsData);
+    try {
+      const pointsData = arg as string;
+      if (pointsData !== points) setPoints(pointsData);
+    } catch (err) {
+      console.error(err);
+    }
   });
 
   return (

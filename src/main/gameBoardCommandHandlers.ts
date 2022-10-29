@@ -48,20 +48,36 @@ export default class GameBoardCommandHandler
   }
 
   displayGamePartHandler(msgBuffer: Buffer) {
-    this.gameBoardEventHandler.sendGamePartData(msgBuffer[3].toString());
+    try {
+      this.gameBoardEventHandler.sendGamePartData(msgBuffer[3].toString());
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   displayScoreHandler(msgBuffer: Buffer) {
-    this.gameBoardEventHandler.sendHomeTeamScoreData(msgBuffer[1].toString());
-    this.gameBoardEventHandler.sendAwayTeamScoreData(msgBuffer[2].toString());
+    try {
+      this.gameBoardEventHandler.sendHomeTeamScoreData(msgBuffer[1].toString());
+      this.gameBoardEventHandler.sendAwayTeamScoreData(msgBuffer[2].toString());
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   displayShotClockHandler(msgBuffer: Buffer) {
-    this.gameBoardEventHandler.sendShotClockData(msgBuffer[1].toString());
+    try {
+      this.gameBoardEventHandler.sendShotClockData(msgBuffer[1].toString());
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   displayMainClockHandler(msgBuffer: Buffer) {
-    this.gameBoardEventHandler.sendGameClockMinutes(msgBuffer[1].toString());
-    this.gameBoardEventHandler.sendGameClockSeconds(msgBuffer[2].toString());
+    try {
+      this.gameBoardEventHandler.sendGameClockMinutes(msgBuffer[1].toString());
+      this.gameBoardEventHandler.sendGameClockSeconds(msgBuffer[2].toString());
+    } catch (err) {
+      console.error(err);
+    }
   }
 }

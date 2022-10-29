@@ -8,8 +8,12 @@ const GamePart: FC = () => {
   window.electron.ipcRenderer.on(
     EGameBoardDisplayChannels.gamePartChannel,
     (arg) => {
-      const gamePartData = arg as TGamePart;
-      if (gamePartData !== part) setPart(gamePartData);
+      try {
+        const gamePartData = arg as TGamePart;
+        if (gamePartData !== part) setPart(gamePartData);
+      } catch (err) {
+        console.error(err);
+      }
     }
   );
   return (

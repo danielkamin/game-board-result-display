@@ -8,8 +8,12 @@ const GameClock: FC = () => {
   window.electron.ipcRenderer.on(
     EGameBoardDisplayChannels.gameClockSecondsChannel,
     (arg) => {
-      const secondsData = arg as string;
-      if (secondsData !== seconds) setSeconds(secondsData);
+      try {
+        const secondsData = arg as string;
+        if (secondsData !== seconds) setSeconds(secondsData);
+      } catch (err) {
+        console.error(err);
+      }
     }
   );
 

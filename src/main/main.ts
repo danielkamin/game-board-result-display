@@ -113,6 +113,7 @@ const createWindow = async () => {
     gameBoardEventHandler
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const gameBoardServerClient = new GameBoardServerClient(
     gameBoardCommandHandler
   );
