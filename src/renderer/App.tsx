@@ -12,30 +12,17 @@ import AwayTeam from './components/AwayTeam';
 
 const ScoreBoard = () => {
   return (
-    <main className="bg-black h-full">
-      <section className="flex py-2 text-white text-5xl">
-        <div className="flex items-end justify-around w-2/5">
-          <HomeTeam />
-          <div className="mx-2">
-            <Points channel={EGameBoardDisplayChannels.homeTeamPointsChannel} />
-          </div>
-          <Divider />
-        </div>
-        <div className="flex items-end justify-around w-2/5">
-          <div className="mx-2">
-            <Points channel={EGameBoardDisplayChannels.awayTeamPointsChannel} />
-          </div>
-          <AwayTeam />
-          <Divider />
-        </div>
-        <div className="flex w-1/4 justify-around items-center">
-          <GamePart />
-          <Divider height="50%" />
-          <GameClock />
-          <Divider height="50%" />
-          <ShotClock />
-        </div>
-      </section>
+    <main
+      className="bg-black h-full border-4 flex"
+      style={{ borderColor: '#9a9a9a' }}
+    >
+      <HomeTeam />
+      <Points channel={EGameBoardDisplayChannels.homeTeamPointsChannel} />
+      <AwayTeam />
+      <Points channel={EGameBoardDisplayChannels.awayTeamPointsChannel} />
+      <GamePart />
+      <GameClock />
+      <ShotClock />
     </main>
   );
 };

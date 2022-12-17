@@ -17,8 +17,16 @@ const GamePart: FC = () => {
     }
   );
   return (
-    <div className="w-11 flex justify-center text-3xl">
-      <span>Q{part}</span>
+    <div
+      className="text-5xl flex items-center justify-center p-4"
+      style={{ borderColor: '#9a9a9a' }}
+    >
+      <span
+        className="text-white text-center"
+        style={{ width: '80px', height: '70px', lineHeight: '65px' }}
+      >
+        {part}Q
+      </span>
     </div>
   );
 };

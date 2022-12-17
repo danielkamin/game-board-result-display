@@ -10,15 +10,23 @@ const AwayTeam = () => {
   });
   return (
     <>
-      <img
+      {/* <img
         src={
           teamsConfig && `file://${teamsConfig && teamsConfig['Away']['image']}`
         }
         alt="Żubry Białystok"
         className="ml-4 team-logo"
-      />
-      <div className="mr-4">
-        {teamsConfig && teamsConfig['Away']['name'].slice(0, 3).toUpperCase()}
+      /> */}
+      <div
+        className=" text-5xl font-medium flex items-center justify-center p-2"
+        style={{ borderColor: '#9a9a9a' }}
+      >
+        <span
+          className="text-white text-center"
+          style={{ width: '120px', height: '70px', lineHeight: '65px' }}
+        >
+          {teamsConfig && teamsConfig['Away']['name'].slice(0, 3).toUpperCase()}
+        </span>
       </div>
     </>
   );
