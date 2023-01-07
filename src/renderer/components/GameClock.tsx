@@ -30,15 +30,12 @@ const GameClock: FC = () => {
   );
 
   return (
-    <div
-      className="text-5xl border-l-4 border-r-4 flex items-center justify-center p-4 flex-grow"
-      style={{ borderColor: '#9a9a9a', backgroundColor: '#5B5B5B' }}
-    >
+    <div className="text-5xl flex items-center justify-center py-4 flex-grow">
       <span
-        className="text-white text-center"
-        style={{ width: '110px', height: '70px', lineHeight: '65px' }}
+        className="text-black text-center bg-white radius rounded-3xl"
+        style={{ width: '160px', height: '65px', lineHeight: '60px' }}
       >
-        <span>{minutes}</span>:<span>{seconds}</span>
+        {minutes}:{seconds}
       </span>
     </div>
   );

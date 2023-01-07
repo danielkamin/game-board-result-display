@@ -16,12 +16,9 @@ const Points: FC<IPoints> = ({ channel }) => {
   });
 
   return (
-    <div
-      className="border-r-4 border-l-4 text-6xl font-medium flex items-center justify-center p-2"
-      style={{ backgroundColor: '#e6e6e6', borderColor: '#9a9a9a' }}
-    >
+    <div className="text-6xl font-medium flex items-center justify-center p-2">
       <span
-        className="text-gray-900 text-center"
+        className="text-center"
         style={{ width: '100px', height: '90px', lineHeight: '85px' }}
       >
         {points}

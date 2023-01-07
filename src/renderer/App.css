@@ -1,15 +1,15 @@
-/*
- * @NOTE: Prepend a `~` to css file paths that are in your node_modules
- *        See https://github.com/webpack-contrib/sass-loader#imports
- */
- @tailwind base;
- @tailwind components;
- @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
- html, body, #root{
-    height: 100%;
- }
+html,
+body,
+#root {
+  height: 100%;
+  font-family: 'Kanit', sans-serif;
+}
 
- .team-logo{
-    max-width: 40px;
- }
+.team-logo {
+  max-width: 40px;
+}
