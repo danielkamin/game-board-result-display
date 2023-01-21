@@ -1,12 +1,10 @@
 {
-  "Away": {
-    "image": "C:/Users/User/Desktop/Live/legion.jpg",
+  "away": {
     "name": "legion",
     "backgroundColor": "#FFFFFF",
     "textColor": "#18181b"
   },
-  "Home": {
-    "image": "C:/Users/User/Desktop/Live/icon.png",
+  "home": {
     "name": "zubry",
     "backgroundColor": "#CE4D11",
     "textColor": "#FFFFFF"

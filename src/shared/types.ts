@@ -1,10 +1,10 @@
+export type TTeamProps = {
+  name: string;
+  backgroundColor: string;
+  textColor: string;
+};
+
 export type TAppConfig = {
-  Away: {
-    Image: string;
-    Name: string;
-  };
-  Home: {
-    Image: string;
-    Name: string;
-  };
+  away: TTeamProps;
+  home: TTeamProps;
 };

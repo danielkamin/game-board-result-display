@@ -17,10 +17,10 @@ const GamePart: FC = () => {
     }
   );
   return (
-    <div className="text-5xl flex items-center justify-center py-4">
+    <div className="text-4xl flex items-center justify-center py-4">
       <span
         className="text-white text-center"
-        style={{ width: '80px', height: '70px', lineHeight: '65px' }}
+        style={{ width: '80px', height: '55px', lineHeight: '50px' }}
       >
         {part}Q
       </span>

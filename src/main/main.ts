@@ -12,7 +12,7 @@ import GameBoardCommandHandler from './lib/gameBoardCommandHandler';
 
 class AppUpdater {
   constructor() {
-    log.transports.file.level = 'info';
+    log.transports.file.level = 'error';
     autoUpdater.logger = log;
     autoUpdater.checkForUpdatesAndNotify();
   }
