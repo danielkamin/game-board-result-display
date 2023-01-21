@@ -6,9 +6,9 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import GameBoardEventHandler from './gameBoardEventHandler';
-import GameBoardServerClient from './gameBoardServerClient';
-import GameBoardCommandHandler from './gameBoardCommandHandlers';
+import RendererWindowEventHandler from './lib/rendererWindowEventHandler';
+import GameBoardUDPClient from './lib/gameBoardUDPClient';
+import GameBoardCommandHandler from './lib/gameBoardCommandHandler';
 
 class AppUpdater {
   constructor() {
@@ -19,6 +19,8 @@ class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
+
+const gotTheLock = app.requestSingleInstanceLock();
 
 ipcMain.on('startup', async (event) => {
   const appPath = app.getAppPath();
@@ -109,15 +111,14 @@ const createWindow = async () => {
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 
-  const gameBoardEventHandler = new GameBoardEventHandler(mainWindow);
+  const rendererWindowEventHandler = new RendererWindowEventHandler(mainWindow);
   const gameBoardCommandHandler = new GameBoardCommandHandler(
-    gameBoardEventHandler
+    rendererWindowEventHandler
   );
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const gameBoardServerClient = new GameBoardServerClient(
+  const gameBoardUDPClient = GameBoardUDPClient.getInstance(
     gameBoardCommandHandler
   );
+  gameBoardUDPClient.init();
 
   // Open urls in the user's browser
   mainWindow.webContents.setWindowOpenHandler((edata) => {
@@ -130,10 +131,16 @@ const createWindow = async () => {
   new AppUpdater();
 };
 
-/**
- * Add event listeners...
- */
-
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+}
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
@@ -147,7 +154,6 @@ app
   .then(() => {
     createWindow();
     app.on('activate', () => {
-      console.log('activate app');
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
       if (mainWindow === null) createWindow();

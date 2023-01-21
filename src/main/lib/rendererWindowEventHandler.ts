@@ -1,9 +1,9 @@
 /* eslint-disable no-await-in-loop */
 
 import { BrowserWindow } from 'electron';
-import { EGameBoardDisplayChannels } from '../shared/enums';
+import { EGameBoardDisplayChannels } from '../../shared/enums';
 
-export interface IGameBoardEventHandler {
+export interface IRendererWindowEventHandler {
   sendHomeTeamScoreData: (points: string) => void;
   sendAwayTeamScoreData: (points: string) => void;
   sendGameClockMinutes: (minutes: string) => void;
@@ -12,7 +12,9 @@ export interface IGameBoardEventHandler {
   sendGamePartData: (gamePart: string) => void;
 }
 
-export default class GameBoardEventHandler implements IGameBoardEventHandler {
+export default class RendererWindowEventHandler
+  implements IRendererWindowEventHandler
+{
   private mainWindow: BrowserWindow;
 
   constructor(mainWindow: BrowserWindow) {

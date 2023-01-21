@@ -1,24 +1,25 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import dgram from 'node:dgram';
 
-import GameBoardCommandHandler, {
-  IGameBoardCommandHandler,
-} from './gameBoardCommandHandlers';
+import GameBoardCommandHandler from './gameBoardCommandHandler';
 
-const SERVER_PORT = 2001;
-export interface IGameBoardServerClient {
-  bindListeners: () => void;
-  init: () => void;
-}
-
-export default class GameBoardServerClient implements IGameBoardServerClient {
+export default class GameBoardUDPClient {
   private server: dgram.Socket = dgram.createSocket('udp4');
 
   private gameBoardCommandHandler: GameBoardCommandHandler;
 
-  constructor(gameBoardCommandHandler: GameBoardCommandHandler) {
+  private static _gameBoardUDPClientInstance: GameBoardUDPClient;
+
+  private constructor(gameBoardCommandHandler: GameBoardCommandHandler) {
     this.gameBoardCommandHandler = gameBoardCommandHandler;
-    this.init();
+  }
+
+  static getInstance(gameBoardCommandHandler: GameBoardCommandHandler) {
+    if (!GameBoardUDPClient._gameBoardUDPClientInstance) {
+      GameBoardUDPClient._gameBoardUDPClientInstance = new GameBoardUDPClient(
+        gameBoardCommandHandler
+      );
+    }
+    return this._gameBoardUDPClientInstance;
   }
 
   init(): void {
@@ -26,16 +27,14 @@ export default class GameBoardServerClient implements IGameBoardServerClient {
     this.server.bind(2001);
   }
 
-  bindListeners(): void {
+  bindListeners() {
     this.server.on('error', (err) => {
       console.log('Connection to game board udp server not established!');
       console.log(`Server error:\n${err.stack}`);
       this.server.close();
     });
     this.server.on('message', (msg) => {
-      this.gameBoardCommandHandler.debounceHandleBufferMessage(
-        Buffer.from(msg)
-      );
+      this.gameBoardCommandHandler.handleBufferMessage(Buffer.from(msg));
     });
     this.server.on('listening', () => {
       const address = this.server.address();
