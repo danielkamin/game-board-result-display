@@ -15,7 +15,7 @@ const Team = ({
   return (
     <>
       <div
-        className="text-5xl flex items-center justify-center p-2"
+        className="text-2xl flex items-center justify-center p-2"
         style={{
           backgroundColor,
           color: textColor,
@@ -24,12 +24,11 @@ const Team = ({
         <span
           className="text-center font-medium"
           style={{
-            width: '120px',
+            width: '140px',
             height: '70px',
-            lineHeight: '65px',
           }}
         >
-          {name.slice(0, 3).toUpperCase()}
+          {name.toUpperCase()}
         </span>
         <Points channel={pointsChannel} />
       </div>
