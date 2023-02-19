@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 
 import { BrowserWindow } from 'electron';
-import { EGameBoardDisplayChannels } from '../../shared/enums';
+import { EGameBoardDisplayChannels } from '../../../shared/enums';
 
 export interface IRendererWindowEventHandler {
   sendHomeTeamScoreData: (points: string) => void;

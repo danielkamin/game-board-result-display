@@ -1,16 +1,15 @@
 import { FC, useState } from 'react';
 import { EGameBoardDisplayChannels } from 'shared/enums';
 
-type TGamePart = '1' | '2' | '3' | '4';
-
 const GamePart: FC = () => {
-  const [part, setPart] = useState<TGamePart>('1');
+  const [part, setPart] = useState<string>('1');
   window.electron.ipcRenderer.on(
     EGameBoardDisplayChannels.gamePartChannel,
     (arg) => {
       try {
-        const gamePartData = arg as TGamePart;
-        if (gamePartData !== part) setPart(gamePartData);
+        const gamePartData = arg as string;
+        if (+gamePartData > 5) setPart('1');
+        else if (gamePartData !== part) setPart(gamePartData);
       } catch (err) {
         console.error(err);
       }

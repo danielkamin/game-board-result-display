@@ -5,6 +5,8 @@ import GameBoardCommandHandler from './gameBoardCommandHandler';
 export default class GameBoardUDPClient {
   private server: dgram.Socket = dgram.createSocket('udp4');
 
+  static connectionsStatus: boolean = false;
+
   private gameBoardCommandHandler: GameBoardCommandHandler;
 
   private static _gameBoardUDPClientInstance: GameBoardUDPClient;
