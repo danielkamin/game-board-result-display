@@ -1,24 +1,26 @@
 import dgram from 'node:dgram';
 
-import GameBoardCommandHandler from './gameBoardCommandHandler';
+import GameBoardInstructionsParser from './gameBoardInstructionsParser';
 
 export default class GameBoardUDPClient {
   private server: dgram.Socket = dgram.createSocket('udp4');
 
   static connectionsStatus: boolean = false;
 
-  private gameBoardCommandHandler: GameBoardCommandHandler;
+  private gameBoardInstructionsParser: GameBoardInstructionsParser;
 
   private static _gameBoardUDPClientInstance: GameBoardUDPClient;
 
-  private constructor(gameBoardCommandHandler: GameBoardCommandHandler) {
-    this.gameBoardCommandHandler = gameBoardCommandHandler;
+  private constructor(
+    gameBoardInstructionsParser: GameBoardInstructionsParser
+  ) {
+    this.gameBoardInstructionsParser = gameBoardInstructionsParser;
   }
 
-  static getInstance(gameBoardCommandHandler: GameBoardCommandHandler) {
+  static getInstance(gameBoardInstructionsParser: GameBoardInstructionsParser) {
     if (!GameBoardUDPClient._gameBoardUDPClientInstance) {
       GameBoardUDPClient._gameBoardUDPClientInstance = new GameBoardUDPClient(
-        gameBoardCommandHandler
+        gameBoardInstructionsParser
       );
     }
     return this._gameBoardUDPClientInstance;
@@ -36,7 +38,11 @@ export default class GameBoardUDPClient {
       this.server.close();
     });
     this.server.on('message', (msg) => {
-      this.gameBoardCommandHandler.handleBufferMessage(Buffer.from(msg));
+      try {
+        this.gameBoardInstructionsParser.parseBufferMessage(Buffer.from(msg));
+      } catch (err) {
+        console.error(err);
+      }
     });
     this.server.on('listening', () => {
       const address = this.server.address();

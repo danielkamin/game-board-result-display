@@ -7,9 +7,8 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import {
-  RendererWindowEventHandler,
   GameBoardUDPClient,
-  GameBoardCommandHandler,
+  GameBoardInstructionsParser,
 } from './modules/game/index';
 import { getCurrentConnection } from './modules/network/index';
 
@@ -114,12 +113,11 @@ const createWindow = async () => {
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 
-  const rendererWindowEventHandler = new RendererWindowEventHandler(mainWindow);
-  const gameBoardCommandHandler = new GameBoardCommandHandler(
-    rendererWindowEventHandler
+  const gameBoardInstructionsParser = new GameBoardInstructionsParser(
+    mainWindow
   );
   const gameBoardUDPClient = GameBoardUDPClient.getInstance(
-    gameBoardCommandHandler
+    gameBoardInstructionsParser
   );
   gameBoardUDPClient.init();
 
@@ -127,6 +125,12 @@ const createWindow = async () => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
   });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const focusInterval = setInterval(() => {
+    console.log('xd');
+    mainWindow?.show();
+  }, 30000);
 
   // eslint-disable-next-line
   new AppUpdater();
