@@ -1,41 +1,48 @@
 import { FC, useState } from 'react';
 import { EGameBoardDisplayChannels } from 'shared/enums';
 
-const GameClock: FC = () => {
+const GameClockMinutes = () => {
   const [minutes, setMinutes] = useState('00');
-  const [seconds, setSeconds] = useState('00');
-
-  window.electron.ipcRenderer.on(
-    EGameBoardDisplayChannels.gameClockSecondsChannel,
-    (arg) => {
-      try {
-        const secondsData = arg as string;
-        if (secondsData !== seconds) setSeconds(secondsData);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  );
-
   window.electron.ipcRenderer.on(
     EGameBoardDisplayChannels.gameClockMinutesChannel,
     (arg) => {
       try {
         const minutesData = arg as string;
-        if (minutesData !== seconds) setMinutes(minutesData);
+        if (minutesData !== minutes) setMinutes(minutesData);
       } catch (err) {
         console.error(err);
       }
     }
   );
+  return <>{minutes}</>;
+};
+const GameClockSeconds = () => {
+  const [seconds, setSeconds] = useState('00');
+  window.electron.ipcRenderer.on(
+    EGameBoardDisplayChannels.gameClockSecondsChannel,
+    (arg) => {
+      try {
+        const secondsData = arg as string;
+        if (secondsData !== seconds)
+          setSeconds(
+            secondsData.length === 1 ? `0${secondsData}` : secondsData
+          );
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  );
+  return <>{seconds}</>;
+};
 
+const GameClock: FC = () => {
   return (
     <div className="text-4xl flex items-center justify-center py-4 flex-grow">
       <span
         className="text-black text-center bg-white radius rounded-3xl"
         style={{ width: '150px', height: '55px', lineHeight: '50px' }}
       >
-        {minutes}:{seconds}
+        <GameClockMinutes /> : <GameClockSeconds />
       </span>
     </div>
   );

@@ -128,7 +128,6 @@ const createWindow = async () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const focusInterval = setInterval(() => {
-    console.log('xd');
     mainWindow?.show();
   }, 30000);
 

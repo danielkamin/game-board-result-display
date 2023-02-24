@@ -7,6 +7,8 @@ export enum EGameBoardDisplayChannels {
   gameClockMinutesChannel = 'game-clock-minutes',
   additionalClockChannel = 'additional-clock',
   gamePartChannel = 'game-part-clock',
+  homeTeamFoulsChannel = 'home-team-fouls',
+  awayTeamFoulsChannel = 'away-team-fouls',
 }
 
 export enum Commands {

@@ -15,7 +15,9 @@ export default class CommandManager {
     buffer: Buffer
   ) {
     if (typeof command === 'string') {
-      this.commands[command].execute(mainWindow, buffer);
+      if (this.commands[command]) {
+        this.commands[command].execute(mainWindow, buffer);
+      }
     } else {
       command.execute(mainWindow, buffer);
     }
