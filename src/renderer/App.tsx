@@ -5,10 +5,10 @@ import { EGameBoardDisplayChannels } from 'shared/enums';
 import { TAppConfig } from 'shared/types';
 
 import './App.css';
-import GameClock from './components/GameClock';
-import GamePart from './components/GamePart';
-import ShotClock from './components/ShotClock';
-import Team from './components/Team';
+import GameClock from './components/board/GameClock';
+import GamePart from './components/board/GamePart';
+import ShotClock from './components/board/ShotClock';
+import Team from './components/board/Team';
 
 const ScoreBoard = () => {
   const [teamsConfig, setTeamsConfig] = useState<TAppConfig>();

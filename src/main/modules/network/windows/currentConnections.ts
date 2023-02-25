@@ -1,8 +1,8 @@
 /* eslint-disable prefer-destructuring */
 import { execFile } from 'node:child_process';
 
-import env from './shellEnv';
-import { frequencyFromChannel, dBFromQuality } from './utils';
+import env from '../shellEnv';
+import { frequencyFromChannel, dBFromQuality } from '../utils';
 
 function parseShowInterfaces(stdout: string) {
   const lines = stdout.split('\r\n');

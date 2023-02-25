@@ -1,11 +1,11 @@
 {
   "away": {
-    "name": "legion",
+    "name": "Znicz Pruszków",
     "backgroundColor": "#FFFFFF",
     "textColor": "#18181b"
   },
   "home": {
-    "name": "zubry",
+    "name": "Żubry Białystok",
     "backgroundColor": "#CE4D11",
     "textColor": "#FFFFFF"
   }

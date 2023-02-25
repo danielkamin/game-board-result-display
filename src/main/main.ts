@@ -10,6 +10,7 @@ import {
   GameBoardUDPClient,
   GameBoardInstructionsParser,
 } from './modules/game/index';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getCurrentConnection } from './modules/network/index';
 
 class AppUpdater {
@@ -157,7 +158,7 @@ app
   .whenReady()
   .then(() => {
     createWindow();
-    getCurrentConnection();
+    // getCurrentConnection();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.

@@ -10,6 +10,7 @@ module.exports = {
     'no-console': 'off',
     'dot-notation': 'off',
     '@typescript-eslint/dot-notation': 'off',
+    'react-hooks/exhaustive-deps': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,

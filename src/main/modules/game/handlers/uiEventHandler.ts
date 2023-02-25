@@ -1,8 +1,8 @@
 import { Buffer } from 'node:buffer';
 import { BrowserWindow } from 'electron';
-import { Command } from '../../../shared/interfaces';
+import { Command } from '../../../../shared/interfaces';
 
-import CommandManager from './commands/commandManager';
+import CommandManager from '../commands/commandManager';
 
 export default class UIEventHandler {
   constructor(

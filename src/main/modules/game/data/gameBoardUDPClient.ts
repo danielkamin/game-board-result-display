@@ -1,6 +1,6 @@
 import dgram from 'node:dgram';
 
-import GameBoardInstructionsParser from './gameBoardInstructionsParser';
+import GameBoardInstructionsParser from '../instructions/gameBoardInstructionsParser';
 
 export default class GameBoardUDPClient {
   private server: dgram.Socket = dgram.createSocket('udp4');
