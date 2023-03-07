@@ -1,25 +1,23 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
-
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `npm run build` or `npm run build:main`, this file is compiled to
- * `./src/main.js` using webpack. This gives us some performance wins.
- */
 import path from 'path';
+import { readFileSync, writeFile } from 'fs';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import { NetworkStatus } from '../shared/types';
+
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import GameBoardEventHandler from './gameBoardEventHandler';
-import GameBoardServerClient from './gameBoardServerClient';
+import {
+  GameBoardUDPClient,
+  GameBoardInstructionsParser,
+} from './modules/game/index';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import network from './modules/network';
 
 class AppUpdater {
   constructor() {
-    log.transports.file.level = 'info';
+    log.transports.file.level = 'error';
     autoUpdater.logger = log;
     autoUpdater.checkForUpdatesAndNotify();
   }
@@ -27,12 +25,55 @@ class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
+const gotTheLock = app.requestSingleInstanceLock();
+
+const RESOURCES_PATH = app.isPackaged
+  ? path.join(process.resourcesPath, 'assets')
+  : path.join(__dirname, '../../assets');
+
+const getAssetPath = (...paths: string[]): string => {
+  return path.join(RESOURCES_PATH, ...paths);
+};
+
+ipcMain.on('startup', async (event) => {
+  try {
+    const parsedData = await network.getCurrentConnections;
+    const config = readFileSync(getAssetPath('scoreboard', 'config.json'), {
+      encoding: 'utf8',
+    }).toString();
+
+    if (
+      parsedData &&
+      typeof parsedData === 'object' &&
+      'length' in parsedData
+    ) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const connections = parsedData as any[];
+      const validNetwork = connections.find((c) => c.ssid === 'W38M12');
+      let networkStatus: NetworkStatus = 'NOT_CONNECTED';
+
+      if (validNetwork) networkStatus = 'CONNECTED';
+      else if (!validNetwork && connections.length > 0) {
+        networkStatus = 'WRONG_NETWORK';
+      }
+      event.reply('config', { networkStatus, config });
+    }
+  } catch (err) {
+    console.log(err);
+  }
 });
 
+ipcMain.on('saveConfig', (_, args) => {
+  writeFile(
+    getAssetPath('scoreboard', 'config.json'),
+    JSON.stringify(args[0]),
+    'utf8',
+    (err) => {
+      if (err) console.error(err);
+      console.log('New settings saved!');
+    }
+  );
+});
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
@@ -63,29 +104,21 @@ const createWindow = async () => {
     await installExtensions();
   }
 
-  const RESOURCES_PATH = app.isPackaged
-    ? path.join(process.resourcesPath, 'assets')
-    : path.join(__dirname, '../../assets');
-
-  const getAssetPath = (...paths: string[]): string => {
-    return path.join(RESOURCES_PATH, ...paths);
-  };
-
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 400,
+    width: 1400,
+    height: 600,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       sandbox: false,
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
+      nodeIntegration: true,
+      webSecurity: false,
     },
   });
-
   mainWindow.loadURL(resolveHtmlPath('index.html'));
-
   mainWindow.on('ready-to-show', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
@@ -96,7 +129,6 @@ const createWindow = async () => {
       mainWindow.show();
     }
   });
-
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
@@ -104,28 +136,40 @@ const createWindow = async () => {
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 
-  const gameBoardEventHandler = new GameBoardEventHandler(mainWindow);
-  gameBoardEventHandler.init();
-  const gameBoardServerClient = new GameBoardServerClient(
-    gameBoardEventHandler
+  const gameBoardInstructionsParser = new GameBoardInstructionsParser(
+    mainWindow
   );
-  gameBoardServerClient.init();
+  const gameBoardUDPClient = GameBoardUDPClient.getInstance(
+    gameBoardInstructionsParser
+  );
+  gameBoardUDPClient.init();
 
-  // Open urls in the user's browser
   mainWindow.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
   });
 
-  // Remove this if your app does not use auto updates
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  if (process.env.NODE_ENV === 'production') {
+    setInterval(() => {
+      mainWindow?.show();
+    }, 30000);
+  }
+
   // eslint-disable-next-line
   new AppUpdater();
 };
 
-/**
- * Add event listeners...
- */
-
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+}
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
@@ -139,7 +183,6 @@ app
   .then(() => {
     createWindow();
     app.on('activate', () => {
-      console.log('activate app');
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
       if (mainWindow === null) createWindow();

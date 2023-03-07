@@ -1,17 +1,20 @@
-import { useState } from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 
-const Hello = () => {
-  const [test, setTest] = useState('');
-  window.electron.ipcRenderer.on('ipc-test', (arg) => {
-    console.log(arg);
-    setTest(arg as string);
-  });
+import GameBoard from './components/board/GameBoard';
+import Settings from './components/settings/Settings';
+
+const ScoreBoard = () => {
   return (
-    <div className="text-orange-500">
-      <div>Hello = {test}</div>
-    </div>
+    <main className="flex-col flex h-full items-center justify-center w-full bg-gray-100">
+      <div className="w-full flex justify-center items-center h-3/5">
+        <Settings />
+      </div>
+      <div className="w-full border-b border-black" />
+      <div className="w-full justify-center items-center flex h-2/5">
+        <GameBoard />
+      </div>
+    </main>
   );
 };
 
@@ -19,7 +22,7 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Hello />} />
+        <Route path="/" element={<ScoreBoard />} />
       </Routes>
     </Router>
   );
