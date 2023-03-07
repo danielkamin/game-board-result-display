@@ -25,7 +25,7 @@ const Team = ({
           className="text-center font-medium"
           style={{
             width: '140px',
-            height: '70px',
+            maxHeight: '70px',
           }}
         >
           {name.toUpperCase()}

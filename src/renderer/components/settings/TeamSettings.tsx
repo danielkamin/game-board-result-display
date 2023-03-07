@@ -11,6 +11,7 @@ import Input from './Input';
 
 type TeamSettingsHandle = {
   getTeamSettings: () => TeamProperties;
+  setTeamSettings: (teamData: TeamProperties) => void;
 };
 const TeamSettings: ForwardRefRenderFunction<
   TeamSettingsHandle,
@@ -26,6 +27,11 @@ const TeamSettings: ForwardRefRenderFunction<
       backgroundColor: backgroundColorState,
       name: nameState,
     }),
+    setTeamSettings: (teamData: TeamProperties) => {
+      setTextColor(teamData.textColor);
+      setBackgroundColor(teamData.backgroundColor);
+      setName(teamData.name);
+    },
   }));
 
   return (

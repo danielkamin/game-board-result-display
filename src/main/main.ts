@@ -1,6 +1,6 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 import path from 'path';
-import { readFileSync } from 'fs';
+import { readFileSync, writeFile } from 'fs';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
@@ -31,10 +31,10 @@ const gotTheLock = app.requestSingleInstanceLock();
 ipcMain.on('startup', async (event) => {
   try {
     const parsedData = await network.getCurrentConnections;
-    const file = readFileSync(getAssetPath('scoreboard', 'config.txt'), {
+    const config = readFileSync(getAssetPath('scoreboard', 'config.json'), {
       encoding: 'utf8',
-    });
-    console.log(file);
+    }).toString();
+
     if (
       parsedData &&
       typeof parsedData === 'object' &&
@@ -48,13 +48,24 @@ ipcMain.on('startup', async (event) => {
       else if (!validNetwork && connections.length > 0) {
         networkStatus = 'WRONG_NETWORK';
       }
-      event.reply('config', networkStatus);
+      event.reply('config', { networkStatus, config });
     }
   } catch (err) {
     console.log(err);
   }
 });
 
+ipcMain.on('saveConfig', (_, args) => {
+  writeFile(
+    getAssetPath('scoreboard', 'config.json'),
+    JSON.stringify(args[0]),
+    'utf8',
+    (err) => {
+      if (err) console.error(err);
+      console.log('New settings saved!');
+    }
+  );
+});
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();

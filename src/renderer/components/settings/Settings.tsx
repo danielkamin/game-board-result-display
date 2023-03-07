@@ -1,4 +1,5 @@
-import { ElementRef, useEffect, useRef } from 'react';
+import { ElementRef, useEffect, useRef, useState } from 'react';
+import { TeamProperties } from '../../../shared/types';
 import useGlobalStore from '../../store/global';
 import ConnectionStatus from './ConnectionsStatus';
 import TeamSettings from './TeamSettings';
@@ -10,13 +11,34 @@ const Settings = () => {
   const homeTeamRef = useRef<TeamSettingsHandle>(null);
   const awayTeamRef = useRef<TeamSettingsHandle>(null);
 
+  window.electron.ipcRenderer.on('config', (arg) => {
+    const eventData = arg as Record<string, any>;
+    try {
+      const teamsSettings = JSON.parse(eventData['config']);
+      saveSettings(teamsSettings);
+      homeTeamRef.current?.setTeamSettings(
+        teamsSettings['homeTeam'] as TeamProperties
+      );
+      awayTeamRef.current?.setTeamSettings(
+        teamsSettings['awayTeam'] as TeamProperties
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
   const saveNewSettings = () => {
     if (!homeTeamRef.current || !awayTeamRef.current) return;
-    //save to file
-    saveSettings({
+    const newSettings = {
       homeTeam: homeTeamRef.current?.getTeamSettings(),
       awayTeam: awayTeamRef.current?.getTeamSettings(),
-    });
+    };
+    saveSettings(newSettings);
+    try {
+      window.electron.ipcRenderer.sendMessage('saveConfig', [newSettings]);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

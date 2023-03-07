@@ -17,7 +17,7 @@ const useGlobalStore = create<GlobalState>()(
           backgroundColor: '#CE4D11',
         },
         awayTeam: {
-          name: '--------- ---------',
+          name: '---------- ------------',
           textColor: '#18181b',
           backgroundColor: '#FFFFFF',
         },
