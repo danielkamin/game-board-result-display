@@ -1,4 +1,4 @@
-import { ElementRef, useEffect, useRef, useState } from 'react';
+import { ElementRef, useRef } from 'react';
 import { TeamProperties } from '../../../shared/types';
 import useGlobalStore from '../../store/global';
 import ConnectionStatus from './ConnectionsStatus';
@@ -12,6 +12,7 @@ const Settings = () => {
   const awayTeamRef = useRef<TeamSettingsHandle>(null);
 
   window.electron.ipcRenderer.on('config', (arg) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const eventData = arg as Record<string, any>;
     try {
       const teamsSettings = JSON.parse(eventData['config']);

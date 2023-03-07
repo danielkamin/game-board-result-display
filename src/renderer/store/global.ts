@@ -1,4 +1,3 @@
-import path from 'path';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { ScoreBoardConfig } from '../../shared/types';

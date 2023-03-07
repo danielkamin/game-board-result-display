@@ -1,18 +1,19 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { NetworkStatus } from '../../../shared/types';
 import { WifiIcon } from '../icons';
 
 const ConnectionStatus = () => {
   const [status, setStatus] = useState<NetworkStatus>('NOT_CONNECTED');
   window.electron.ipcRenderer.on('config', (arg) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const eventData = arg as Record<string, any>;
     setStatus(eventData['networkStatus'] as NetworkStatus);
   });
 
   const getColorByStatus = (): string => {
     if (status === 'CONNECTED') return 'text-green-700';
-    else if (status === 'WRONG_NETWORK') return 'text-yellow-500';
-    else return 'text-red-700';
+    if (status === 'WRONG_NETWORK') return 'text-yellow-500';
+    return 'text-red-700';
   };
 
   return (

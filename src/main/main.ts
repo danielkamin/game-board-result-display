@@ -4,7 +4,6 @@ import { readFileSync, writeFile } from 'fs';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import { EGameBoardDisplayChannels } from '../shared/enums';
 import { NetworkStatus } from '../shared/types';
 
 import MenuBuilder from './menu';
@@ -28,6 +27,14 @@ let mainWindow: BrowserWindow | null = null;
 
 const gotTheLock = app.requestSingleInstanceLock();
 
+const RESOURCES_PATH = app.isPackaged
+  ? path.join(process.resourcesPath, 'assets')
+  : path.join(__dirname, '../../assets');
+
+const getAssetPath = (...paths: string[]): string => {
+  return path.join(RESOURCES_PATH, ...paths);
+};
+
 ipcMain.on('startup', async (event) => {
   try {
     const parsedData = await network.getCurrentConnections;
@@ -40,6 +47,7 @@ ipcMain.on('startup', async (event) => {
       typeof parsedData === 'object' &&
       'length' in parsedData
     ) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const connections = parsedData as any[];
       const validNetwork = connections.find((c) => c.ssid === 'W38M12');
       let networkStatus: NetworkStatus = 'NOT_CONNECTED';
@@ -89,14 +97,6 @@ const installExtensions = async () => {
       forceDownload
     )
     .catch(console.log);
-};
-
-const RESOURCES_PATH = app.isPackaged
-  ? path.join(process.resourcesPath, 'assets')
-  : path.join(__dirname, '../../assets');
-
-const getAssetPath = (...paths: string[]): string => {
-  return path.join(RESOURCES_PATH, ...paths);
 };
 
 const createWindow = async () => {
