@@ -6,3 +6,7 @@ export interface Command {
   name: string;
   execute(mainWindow: BrowserWindow, buffer: Buffer): any;
 }
+
+export interface IconProps {
+  customClasses?: string;
+}

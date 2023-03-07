@@ -1,9 +1,12 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 import path from 'path';
-import fs from 'fs';
+import { readFileSync } from 'fs';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import { EGameBoardDisplayChannels } from '../shared/enums';
+import { NetworkStatus } from '../shared/types';
+
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import {
@@ -11,7 +14,7 @@ import {
   GameBoardInstructionsParser,
 } from './modules/game/index';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { getCurrentConnection } from './modules/network/index';
+import network from './modules/network';
 
 class AppUpdater {
   constructor() {
@@ -26,18 +29,30 @@ let mainWindow: BrowserWindow | null = null;
 const gotTheLock = app.requestSingleInstanceLock();
 
 ipcMain.on('startup', async (event) => {
-  const appPath = app.getAppPath();
-  let filePath = '';
-  if (process.env.NODE_ENV === 'production') {
-    filePath =
-      process.platform === 'win32'
-        ? '../../config.json'
-        : '../../../../config.json';
-  } else {
-    filePath = 'config.json';
+  try {
+    const parsedData = await network.getCurrentConnections;
+    const file = readFileSync(getAssetPath('scoreboard', 'config.txt'), {
+      encoding: 'utf8',
+    });
+    console.log(file);
+    if (
+      parsedData &&
+      typeof parsedData === 'object' &&
+      'length' in parsedData
+    ) {
+      const connections = parsedData as any[];
+      const validNetwork = connections.find((c) => c.ssid === 'W38M12');
+      let networkStatus: NetworkStatus = 'NOT_CONNECTED';
+
+      if (validNetwork) networkStatus = 'CONNECTED';
+      else if (!validNetwork && connections.length > 0) {
+        networkStatus = 'WRONG_NETWORK';
+      }
+      event.reply('config', networkStatus);
+    }
+  } catch (err) {
+    console.log(err);
   }
-  const teamsConfig = fs.readFileSync(path.join(appPath, filePath)).toString();
-  event.reply('config', teamsConfig);
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -65,24 +80,23 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
+const RESOURCES_PATH = app.isPackaged
+  ? path.join(process.resourcesPath, 'assets')
+  : path.join(__dirname, '../../assets');
+
+const getAssetPath = (...paths: string[]): string => {
+  return path.join(RESOURCES_PATH, ...paths);
+};
+
 const createWindow = async () => {
   if (isDebug) {
     await installExtensions();
   }
 
-  const RESOURCES_PATH = app.isPackaged
-    ? path.join(process.resourcesPath, 'assets')
-    : path.join(__dirname, '../../assets');
-
-  const getAssetPath = (...paths: string[]): string => {
-    return path.join(RESOURCES_PATH, ...paths);
-  };
-
   mainWindow = new BrowserWindow({
     show: false,
-    width: 920,
-    height: 160,
-    maxWidth: 940,
+    width: 1400,
+    height: 600,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       sandbox: false,
@@ -93,9 +107,7 @@ const createWindow = async () => {
       webSecurity: false,
     },
   });
-
   mainWindow.loadURL(resolveHtmlPath('index.html'));
-
   mainWindow.on('ready-to-show', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
@@ -106,7 +118,6 @@ const createWindow = async () => {
       mainWindow.show();
     }
   });
-
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
@@ -128,9 +139,11 @@ const createWindow = async () => {
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const focusInterval = setInterval(() => {
-    mainWindow?.show();
-  }, 30000);
+  if (process.env.NODE_ENV === 'production') {
+    setInterval(() => {
+      mainWindow?.show();
+    }, 30000);
+  }
 
   // eslint-disable-next-line
   new AppUpdater();
@@ -158,7 +171,6 @@ app
   .whenReady()
   .then(() => {
     createWindow();
-    // getCurrentConnection();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.

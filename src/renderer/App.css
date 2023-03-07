@@ -10,6 +10,7 @@ body,
   font-family: 'Kanit', sans-serif;
 }
 
-.team-logo {
-  max-width: 40px;
+.score-board {
+  width: 920px;
+  height: 160px;
 }

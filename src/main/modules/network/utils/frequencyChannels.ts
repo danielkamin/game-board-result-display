@@ -30,16 +30,7 @@ for (let m = 165; m <= 173; m += 4) {
   frequency += 20;
 }
 
-function frequencyFromChannel(channelId: string) {
-  return channels[parseInt(channelId, 10)];
-}
+const getFrequencyFromChannel = (channel: string) =>
+  channels[parseInt(channel, 10)];
 
-function dBFromQuality(quality: string) {
-  return parseFloat(quality) / 2 - 100;
-}
-
-function qualityFromDB(db: string) {
-  return 2 * (parseFloat(db) + 100);
-}
-
-export { frequencyFromChannel, dBFromQuality, qualityFromDB };
+export default getFrequencyFromChannel;

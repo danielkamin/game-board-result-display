@@ -1,10 +1,10 @@
 import { EGameBoardDisplayChannels } from 'shared/enums';
-import { TTeamProps } from 'shared/types';
+import { TeamProperties } from 'shared/types';
 import Points from './Points';
 
 type TTeamComponentProps = {
   pointsChannel: EGameBoardDisplayChannels;
-} & TTeamProps;
+} & TeamProperties;
 
 const Team = ({
   name,

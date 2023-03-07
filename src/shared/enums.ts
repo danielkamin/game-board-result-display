@@ -1,6 +1,5 @@
 /* eslint-disable import/prefer-default-export */
 export enum EGameBoardDisplayChannels {
-  testChannel = 'test-channel',
   homeTeamPointsChannel = 'home-team-points',
   awayTeamPointsChannel = 'away-team-points',
   gameClockSecondsChannel = 'game-clock-seconds',
@@ -9,6 +8,7 @@ export enum EGameBoardDisplayChannels {
   gamePartChannel = 'game-part-clock',
   homeTeamFoulsChannel = 'home-team-fouls',
   awayTeamFoulsChannel = 'away-team-fouls',
+  currentConnection = 'current-connection',
 }
 
 export enum Commands {
