@@ -1,9 +1,10 @@
-import { EGameBoardDisplayChannels } from 'shared/enums';
-import { TeamProperties } from 'shared/types';
+import { EGameBoardDisplayChannels } from '../../../shared/enums';
+import { TeamProperties } from '../../../shared/types';
 import Points from './Points';
 
 type TTeamComponentProps = {
   pointsChannel: EGameBoardDisplayChannels;
+  fontSize: number;
 } & TeamProperties;
 
 const Team = ({
@@ -11,21 +12,22 @@ const Team = ({
   backgroundColor,
   textColor,
   pointsChannel,
+  fontSize,
 }: TTeamComponentProps) => {
   return (
     <>
       <div
-        className="text-2xl flex items-center justify-center p-2"
+        className="text-2xl flex items-center justify-between p-2 pl-4 relative"
         style={{
           backgroundColor,
           color: textColor,
+          width: '315px',
         }}
       >
         <span
-          className="text-center font-medium"
+          className="text-center font-medium leading-none"
           style={{
-            width: '140px',
-            maxHeight: '70px',
+            fontSize: `${fontSize}px`,
           }}
         >
           {name.toUpperCase()}

@@ -49,7 +49,7 @@ const TeamSettings: ForwardRefRenderFunction<
       </div>
       <div>
         <span>Nazwa druzyny:</span>
-        <Input value={nameState} onChange={setName} />
+        <Input value={nameState} onChange={(e) => setName(e.target.value)} />
       </div>
     </div>
   );

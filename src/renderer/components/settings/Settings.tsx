@@ -1,38 +1,49 @@
-import { ElementRef, useRef } from 'react';
+import { ElementRef, useEffect, useRef } from 'react';
 import { TeamProperties } from '../../../shared/types';
 import useGlobalStore from '../../store/global';
-import ConnectionStatus from './ConnectionsStatus';
 import TeamSettings from './TeamSettings';
+import GeneralSettings from './GeneralSettings';
 
 type TeamSettingsHandle = ElementRef<typeof TeamSettings>;
+type GeneralSettingsHandle = ElementRef<typeof GeneralSettings>;
 
 const Settings = () => {
-  const { homeTeam, awayTeam, saveSettings } = useGlobalStore();
+  const { homeTeam, awayTeam, general, saveSettings } = useGlobalStore();
   const homeTeamRef = useRef<TeamSettingsHandle>(null);
   const awayTeamRef = useRef<TeamSettingsHandle>(null);
+  const generalSettingsRef = useRef<GeneralSettingsHandle>(null);
 
-  window.electron.ipcRenderer.on('config', (arg) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const eventData = arg as Record<string, any>;
-    try {
-      const teamsSettings = JSON.parse(eventData['config']);
-      saveSettings(teamsSettings);
-      homeTeamRef.current?.setTeamSettings(
-        teamsSettings['homeTeam'] as TeamProperties
-      );
-      awayTeamRef.current?.setTeamSettings(
-        teamsSettings['awayTeam'] as TeamProperties
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  });
+  useEffect(() => {
+    if (!window.electron?.ipcRenderer) return;
+    window.electron.ipcRenderer.on('config', (arg) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const eventData = arg as Record<string, any>;
+      try {
+        const teamsSettings = JSON.parse(eventData['config']);
+        saveSettings(teamsSettings);
+        homeTeamRef.current?.setTeamSettings(
+          teamsSettings['homeTeam'] as TeamProperties
+        );
+        awayTeamRef.current?.setTeamSettings(
+          teamsSettings['awayTeam'] as TeamProperties
+        );
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  }, []);
 
   const saveNewSettings = () => {
-    if (!homeTeamRef.current || !awayTeamRef.current) return;
+    if (
+      !homeTeamRef.current ||
+      !awayTeamRef.current ||
+      !generalSettingsRef.current
+    )
+      return;
     const newSettings = {
       homeTeam: homeTeamRef.current?.getTeamSettings(),
       awayTeam: awayTeamRef.current?.getTeamSettings(),
+      general: generalSettingsRef.current?.getGeneralSettings(),
     };
     saveSettings(newSettings);
     try {
@@ -43,25 +54,24 @@ const Settings = () => {
   };
 
   return (
-    <section className="grid grid-cols-5 w-4/5 m-auto">
-      <div className="col-span-2">
-        <TeamSettings
-          ref={homeTeamRef}
-          textColor={homeTeam.textColor}
-          backgroundColor={homeTeam.backgroundColor}
-          name={homeTeam.name}
+    <section className="flex gap-4 justify-center m-auto">
+      <TeamSettings
+        ref={homeTeamRef}
+        textColor={homeTeam.textColor}
+        backgroundColor={homeTeam.backgroundColor}
+        name={homeTeam.name}
+      />
+      <TeamSettings
+        ref={awayTeamRef}
+        textColor={awayTeam.textColor}
+        backgroundColor={awayTeam.backgroundColor}
+        name={awayTeam.name}
+      />
+      <div className="flex flex-col justify-between">
+        <GeneralSettings
+          ref={generalSettingsRef}
+          teamsNamesFontSize={general.teamsNamesFontSize}
         />
-      </div>
-      <div className="col-span-2">
-        <TeamSettings
-          ref={awayTeamRef}
-          textColor={awayTeam.textColor}
-          backgroundColor={awayTeam.backgroundColor}
-          name={awayTeam.name}
-        />
-      </div>
-      <div className="col-span-1 flex flex-col justify-between">
-        <ConnectionStatus />
         <button
           type="button"
           onClick={saveNewSettings}

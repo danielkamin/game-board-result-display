@@ -5,10 +5,14 @@ export type TeamProperties = {
   backgroundColor: string;
   textColor: string;
 };
+export type GeneralSettingsProperties = {
+  teamsNamesFontSize: number;
+};
 
 export type ScoreBoardConfig = {
   awayTeam: TeamProperties;
   homeTeam: TeamProperties;
+  general: GeneralSettingsProperties;
 };
 
 const NETWORK_STATUS = {

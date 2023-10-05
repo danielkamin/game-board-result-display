@@ -1,9 +1,10 @@
 import { FC, useEffect, useState } from 'react';
-import { EGameBoardDisplayChannels } from 'shared/enums';
+import { EGameBoardDisplayChannels } from '../../../shared/enums';
 
 const GameClockMinutes = () => {
   const [minutes, setMinutes] = useState('00');
   useEffect(() => {
+    if (!window.electron?.ipcRenderer) return;
     window.electron.ipcRenderer.on(
       EGameBoardDisplayChannels.gameClockMinutesChannel,
       (arg) => {
@@ -17,11 +18,12 @@ const GameClockMinutes = () => {
     );
   }, []);
 
-  return <span>{minutes}</span>;
+  return <span className="mb-1">{minutes}</span>;
 };
 const GameClockSeconds = () => {
   const [seconds, setSeconds] = useState('00');
   useEffect(() => {
+    if (!window.electron?.ipcRenderer) return;
     window.electron.ipcRenderer.on(
       EGameBoardDisplayChannels.gameClockSecondsChannel,
       (arg) => {
@@ -37,17 +39,18 @@ const GameClockSeconds = () => {
       }
     );
   }, []);
-  return <span>{seconds}</span>;
+  return <span className="mb-1">{seconds}</span>;
 };
 
 const GameClock: FC = () => {
   return (
-    <div className="text-4xl flex items-center justify-center py-4 flex-grow">
+    <div className="text-4xl flex items-center justify-center flex-grow">
       <span
-        className="text-black text-center bg-white radius rounded-3xl"
-        style={{ width: '150px', height: '55px', lineHeight: '50px' }}
+        className="text-black text-center bg-white radius rounded-3xl flex justify-center items-center gap-2"
+        style={{ width: '150px', height: '50px' }}
       >
-        <GameClockMinutes /> : <GameClockSeconds />
+        <GameClockMinutes /> <span className="mb-1">:</span>{' '}
+        <GameClockSeconds />
       </span>
     </div>
   );

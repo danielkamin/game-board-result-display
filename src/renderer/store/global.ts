@@ -20,6 +20,9 @@ const useGlobalStore = create<GlobalState>()(
           textColor: '#18181b',
           backgroundColor: '#FFFFFF',
         },
+        general: {
+          teamsNamesFontSize: 24,
+        },
         saveSettings: (config) => set(() => config),
       }),
       {

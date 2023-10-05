@@ -4,6 +4,7 @@ import { readFileSync, writeFile } from 'fs';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import { EGameBoardDisplayChannels } from '../shared/enums';
 import { NetworkStatus } from '../shared/types';
 
 import MenuBuilder from './menu';
@@ -24,7 +25,7 @@ class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
-
+let networkStatus: NetworkStatus = 'NOT_CONNECTED';
 const gotTheLock = app.requestSingleInstanceLock();
 
 const RESOURCES_PATH = app.isPackaged
@@ -49,21 +50,20 @@ ipcMain.on('startup', async (event) => {
     ) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const connections = parsedData as any[];
-      const validNetwork = connections.find((c) => c.ssid === 'W38M12');
-      let networkStatus: NetworkStatus = 'NOT_CONNECTED';
+      const validNetwork = connections.find((c) => c.ssid === 'kig_ctrl');
 
       if (validNetwork) networkStatus = 'CONNECTED';
       else if (!validNetwork && connections.length > 0) {
         networkStatus = 'WRONG_NETWORK';
       }
-      event.reply('config', { networkStatus, config });
+      event.reply('config', { config });
     }
   } catch (err) {
     console.log(err);
   }
 });
 
-ipcMain.on('saveConfig', (_, args) => {
+ipcMain.on('saveConfig', (event, args) => {
   writeFile(
     getAssetPath('scoreboard', 'config.json'),
     JSON.stringify(args[0]),
@@ -73,6 +73,7 @@ ipcMain.on('saveConfig', (_, args) => {
       console.log('New settings saved!');
     }
   );
+  event.reply(EGameBoardDisplayChannels.currentConnection, networkStatus);
 });
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

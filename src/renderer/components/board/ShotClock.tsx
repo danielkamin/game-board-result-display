@@ -1,13 +1,12 @@
 import { FC, useEffect, useState } from 'react';
-import { EGameBoardDisplayChannels } from 'shared/enums';
+import { EGameBoardDisplayChannels } from '../../../shared/enums';
+import { inRange } from '../../../shared/utils';
 
 const ShotClock: FC = () => {
   const [seconds, setSeconds] = useState('1');
-  const inRange = (number: number, start: number, end: number): boolean => {
-    if (number >= start && number <= end) return true;
-    return false;
-  };
+
   useEffect(() => {
+    if (!window.electron?.ipcRenderer) return;
     window.electron.ipcRenderer.on(
       EGameBoardDisplayChannels.additionalClockChannel,
       (arg) => {
@@ -26,10 +25,10 @@ const ShotClock: FC = () => {
   }, []);
 
   return (
-    <div className="text-4xl flex items-center justify-center py-2">
+    <div className="text-4xl flex items-center justify-center">
       <span
         className="text-white text-center overflow-hidden"
-        style={{ width: '70px', height: '55px', lineHeight: '50px' }}
+        style={{ width: '60px', height: '55px', lineHeight: '50px' }}
       >
         {seconds}
       </span>

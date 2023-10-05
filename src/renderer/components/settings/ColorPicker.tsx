@@ -23,7 +23,7 @@ const PopoverPicker: FC<ColorPickerProps> = ({ color, onChange }) => {
       />
       {isOpen && (
         <div
-          className="absolute top-full left-0 rounded shadow-md"
+          className="absolute top-full left-0 rounded shadow-md z-10"
           ref={popover}
         >
           <HexColorPicker color={color} onChange={onChange} />
