@@ -17,6 +17,7 @@ const GameBoard = () => {
         textColor={homeTeam.textColor}
         fontSize={general.teamsNamesFontSize}
         pointsChannel={EGameBoardDisplayChannels.homeTeamPointsChannel}
+        foulsChannel={EGameBoardDisplayChannels.homeTeamFoulsChannel}
       />
       <Team
         name={awayTeam.name}
@@ -24,6 +25,7 @@ const GameBoard = () => {
         textColor={awayTeam.textColor}
         fontSize={general.teamsNamesFontSize}
         pointsChannel={EGameBoardDisplayChannels.awayTeamPointsChannel}
+        foulsChannel={EGameBoardDisplayChannels.awayTeamFoulsChannel}
       />
       <div className="flex justify-center gap-1 w-auto m-auto">
         <GamePart />

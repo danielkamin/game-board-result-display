@@ -15,12 +15,10 @@ const TeamFouls: FC<IFouls> = ({ channel }) => {
     window.electron.ipcRenderer.on(channel, (arg) => {
       try {
         const foulData = arg as string;
-        if (+foulData !== fouls) {
-          if (inRange(+foulData, 0, 5)) {
-            setFouls(+foulData);
-          } else {
-            setFouls(0);
-          }
+        if (+foulData !== fouls && inRange(+foulData, 0, 5)) {
+          setFouls(+foulData);
+        } else {
+          setFouls(0);
         }
       } catch (err) {
         console.error(err);

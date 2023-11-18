@@ -1,9 +1,11 @@
 import { EGameBoardDisplayChannels } from '../../../shared/enums';
 import { TeamProperties } from '../../../shared/types';
 import Points from './Points';
+import TeamFouls from './TeamFouls';
 
 type TTeamComponentProps = {
   pointsChannel: EGameBoardDisplayChannels;
+  foulsChannel: EGameBoardDisplayChannels;
   fontSize: number;
 } & TeamProperties;
 
@@ -13,6 +15,7 @@ const Team = ({
   textColor,
   pointsChannel,
   fontSize,
+  foulsChannel,
 }: TTeamComponentProps) => {
   return (
     <>
@@ -33,6 +36,7 @@ const Team = ({
           {name.toUpperCase()}
         </span>
         <Points channel={pointsChannel} />
+        <TeamFouls channel={foulsChannel} />
       </div>
     </>
   );
