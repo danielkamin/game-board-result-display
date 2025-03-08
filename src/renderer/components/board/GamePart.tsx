@@ -1,29 +1,39 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { EGameBoardDisplayChannels } from '../../../shared/enums';
 import { inRange } from '../../../shared/utils';
 
 const GamePart: FC = () => {
   const [part, setPart] = useState<string>('1');
+  const handleGamePartUpdate = useCallback((arg: unknown) => {
+    try {
+      const gamePartData = arg as string;
+      if (gamePartData !== part) {
+        if (inRange(+gamePartData, 1, 4)) {
+          setPart(gamePartData);
+        } else {
+          setPart('1');
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
   useEffect(() => {
     if (!window.electron?.ipcRenderer) return;
     window.electron.ipcRenderer.on(
       EGameBoardDisplayChannels.gamePartChannel,
-      (arg) => {
-        try {
-          const gamePartData = arg as string;
-          if (gamePartData !== part) {
-            if (inRange(+gamePartData, 1, 4)) {
-              setPart(gamePartData);
-            } else {
-              setPart('1');
-            }
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      }
+      handleGamePartUpdate
     );
-  }, []);
+    // eslint-disable-next-line consistent-return
+    return () => {
+      if (window.electron?.ipcRenderer) {
+        window.electron.ipcRenderer.removeListener(
+          EGameBoardDisplayChannels.gamePartChannel,
+          handleGamePartUpdate
+        );
+      }
+    };
+  }, [handleGamePartUpdate]);
 
   return (
     <div className="text-4xl flex items-center justify-center">

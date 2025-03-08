@@ -1,6 +1,5 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import ns from './public/ns.png';
 
 import GameBoard from './components/board/GameBoard';
 import Settings from './components/settings/Settings';
@@ -13,7 +12,6 @@ const ScoreBoard = () => {
       </div>
       <div className="w-full border-b border-black" />
       <div className="w-full justify-center items-center flex h-2/5">
-        <img src={ns} alt="" style={{ height: '80px' }} />
         <GameBoard />
       </div>
     </main>

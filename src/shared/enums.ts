@@ -9,6 +9,8 @@ export enum EGameBoardDisplayChannels {
   homeTeamFoulsChannel = 'home-team-fouls',
   awayTeamFoulsChannel = 'away-team-fouls',
   currentConnection = 'current-connection',
+  homeTeamTimeoutsChannel = 'current-connection',
+  awayTeamTimeoutsChannel = 'current-connection',
 }
 
 export enum Commands {

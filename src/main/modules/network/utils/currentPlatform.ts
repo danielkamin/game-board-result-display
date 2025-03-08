@@ -4,7 +4,6 @@ import windows from '../windows/index';
 
 export default () => {
   let platform: Record<string, any>;
-
   switch (process.platform) {
     case 'darwin':
       platform = macOS;

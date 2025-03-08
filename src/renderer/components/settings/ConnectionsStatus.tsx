@@ -1,20 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { EGameBoardDisplayChannels } from '../../../shared/enums';
 import { NetworkStatus } from '../../../shared/types';
 import { WifiIcon } from '../icons';
 
 const ConnectionStatus = () => {
   const [status, setStatus] = useState<NetworkStatus>('NOT_CONNECTED');
+  const handleConnectionStatusChange = useCallback((arg: unknown) => {
+    setStatus(arg as NetworkStatus);
+  }, []);
   useEffect(() => {
     if (!window.electron?.ipcRenderer) return;
     window.electron.ipcRenderer.on(
       EGameBoardDisplayChannels.currentConnection,
-      (arg) => {
-        console.log(arg as NetworkStatus);
-        setStatus(arg as NetworkStatus);
-      }
+      handleConnectionStatusChange
     );
-  }, []);
+    // eslint-disable-next-line consistent-return
+    return () => {
+      if (window.electron?.ipcRenderer) {
+        window.electron.ipcRenderer.removeListener(
+          EGameBoardDisplayChannels.currentConnection,
+          handleConnectionStatusChange
+        );
+      }
+    };
+  }, [handleConnectionStatusChange]);
 
   const getColorByStatus = (): string => {
     if (status === 'CONNECTED') return 'text-green-700';

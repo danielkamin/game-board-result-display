@@ -1,21 +1,20 @@
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FC, useCallback, useEffect, useState } from 'react';
 import { EGameBoardDisplayChannels } from '../../../shared/enums';
 import { inRange } from '../../../shared/utils';
 
-interface IFouls {
+interface ITimeouts {
   channel: EGameBoardDisplayChannels;
 }
-const TeamFouls: FC<IFouls> = ({ channel }) => {
-  const [fouls, setFouls] = useState(0);
-  const handleTeamFoulsUpdate = useCallback((arg: unknown) => {
+
+const TeamTimeouts: FC<ITimeouts> = ({ channel }) => {
+  const [timeouts, setTimeouts] = useState(0);
+  const handleTimeoutUpdate = useCallback((arg: unknown) => {
     try {
-      const foulData = arg as string;
-      if (+foulData !== fouls && inRange(+foulData, 0, 5)) {
-        setFouls(+foulData);
+      const timeoutData = arg as number;
+      if (timeoutData !== timeouts && inRange(timeoutData, 0, 3)) {
+        setTimeouts(timeoutData);
       } else {
-        setFouls(0);
+        setTimeouts(0);
       }
     } catch (err) {
       console.error(err);
@@ -23,23 +22,25 @@ const TeamFouls: FC<IFouls> = ({ channel }) => {
   }, []);
   useEffect(() => {
     if (!window.electron?.ipcRenderer) return;
-    window.electron.ipcRenderer.on(channel, handleTeamFoulsUpdate);
+
+    window.electron.ipcRenderer.on(channel, handleTimeoutUpdate);
+
     // eslint-disable-next-line consistent-return
     return () => {
       if (window.electron?.ipcRenderer) {
         window.electron.ipcRenderer.removeListener(
           channel,
-          handleTeamFoulsUpdate
+          handleTimeoutUpdate
         );
       }
     };
-  }, [handleTeamFoulsUpdate]);
+  }, [channel, handleTimeoutUpdate]);
 
   return (
     <div className="text-white">
-      <span>Faule: {fouls}</span>
+      <span>Czasy: {timeouts}</span>
     </div>
   );
 };
 
-export default TeamFouls;
+export default TeamTimeouts;

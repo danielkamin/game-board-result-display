@@ -1,17 +1,19 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { percentageFromDB } from '../utils/dBHelpers';
 import getFrequencyFromChannel from '../utils/frequencyChannels';
 
 const command = () => ({
-  cmd: '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport',
-  args: ['--getinfo'],
+  cmd: '/usr/bin/wdutil',
+  args: ['info'],
 });
 
-const agrCtlRSSIRegex = /[ ]*agrCtlRSSI: (.*)/;
-const BSSIDRegex = /[ ]*BSSID: ([0-9A-Fa-f:]*)/;
-const SSIDRegex = /[ ]*SSID: (.*)/;
-const securityRegex = /[ ]*link auth: (.*)/;
-const channelRegex = /[ ]*channel: (.*)/;
+// Updated regex patterns for wdutil output format
+const signalStrengthRegex = /RSSI: (-\d+)/;
+const BSSIDRegex = /BSSID: ([0-9A-Fa-f:]+)/;
+const SSIDRegex = /SSID: "(.*?)"/;
+const securityRegex = /Security: ([^\n]+)/;
+const channelRegex = /Channel: (\d+)(?: \(.*?\))?/;
 
 const formatMacAddress = (mac: string) =>
   mac
@@ -20,47 +22,57 @@ const formatMacAddress = (mac: string) =>
     .join(':');
 
 const parse = (stdout: string) => {
-  const lines = stdout.split('\n');
-
+  // Split the output into sections - wdutil provides info about multiple interfaces
+  const sections = stdout.split('Interface:');
   const connections: any[] = [];
-  let connection: any = {};
-  lines.forEach((line) => {
-    const matchAgrCtlRSSI = line.match(agrCtlRSSIRegex);
-    if (matchAgrCtlRSSI) {
-      connection.signal_level = parseInt(matchAgrCtlRSSI[1], 10);
-      connection.quality = percentageFromDB(connection.signal_level);
+
+  sections.forEach((section) => {
+    // Skip empty sections or sections without WiFi info
+    if (!section.includes('SSID:')) {
       return;
     }
 
-    const matchBSSID = line.match(BSSIDRegex);
+    const connection: any = {};
+
+    // Extract signal strength
+    const matchSignal = section.match(signalStrengthRegex);
+    if (matchSignal) {
+      connection.signal_level = parseInt(matchSignal[1], 10);
+      connection.quality = percentageFromDB(connection.signal_level);
+    }
+
+    // Extract BSSID (MAC address)
+    const matchBSSID = section.match(BSSIDRegex);
     if (matchBSSID) {
       connection.bssid = formatMacAddress(matchBSSID[1]);
       connection.mac = connection.bssid; // for retrocompatibility
-      return;
     }
 
-    const matchSSID = line.match(SSIDRegex);
+    // Extract SSID
+    const matchSSID = section.match(SSIDRegex);
     if (matchSSID) {
-      [, connection.ssid] = matchSSID;
-      return;
+      connection.ssid = matchSSID[1];
     }
 
-    const matchSecurity = line.match(securityRegex);
+    // Extract security information
+    const matchSecurity = section.match(securityRegex);
     if (matchSecurity) {
-      [, connection.security] = matchSecurity;
-      connection.security_flags = [];
-      return;
+      connection.security = matchSecurity[1];
+      connection.security_flags = []; // Maintained for compatibility
     }
 
-    const matchChannel = line.match(channelRegex);
+    // Extract channel information
+    const matchChannel = section.match(channelRegex);
     if (matchChannel) {
-      [, connection.channel] = matchChannel;
+      connection.channel = matchChannel[1];
       connection.frequency = getFrequencyFromChannel(connection.channel);
+    }
+
+    // Only add connections that have the essential information
+    if (connection.ssid && connection.bssid) {
       connections.push(connection);
-      connection = {};
     }
   });
-
   return connections;
 };
 

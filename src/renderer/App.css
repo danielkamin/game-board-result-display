@@ -12,5 +12,80 @@ body,
 
 .score-board {
   width: 920px;
-  height: 80px;
+  height: 65px;
+}
+
+.score-board .transition-wrapper {
+  position: relative;
+}
+
+.score-board .transition-overlay {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: white;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.score-board .transition-overlay.animate-in {
+  transform-origin: bottom;
+  animation: wipeIn 0.5s ease-in forwards;
+}
+
+.score-board .transition-overlay.animate-out {
+  transform-origin: top;
+  animation: wipeOut 0.5s ease-out forwards;
+}
+
+@keyframes wipeIn {
+  0% {
+    height: 0;
+    transform: scaleY(0);
+  }
+  100% {
+    height: 100%;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes wipeOut {
+  0% {
+    height: 100%;
+    transform: scaleY(1);
+  }
+  100% {
+    height: 100%;
+    transform: scaleY(0);
+  }
+}
+
+
+/* App.css - nowe animacje */
+@keyframes slideUp {
+  0% {
+    transform: translateY(100%);
+  }
+  30%, 70% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+.animate-score-change {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.animate-score-change-inner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: slideUp 1200ms ease-in-out forwards;
 }

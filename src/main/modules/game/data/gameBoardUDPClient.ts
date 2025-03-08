@@ -1,5 +1,4 @@
 import dgram from 'node:dgram';
-
 import GameBoardInstructionsParser from '../instructions/gameBoardInstructionsParser';
 
 export default class GameBoardUDPClient {

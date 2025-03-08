@@ -51,12 +51,14 @@ ipcMain.on('startup', async (event) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const connections = parsedData as any[];
       const validNetwork = connections.find((c) => c.ssid === 'kig_ctrl');
-
       if (validNetwork) networkStatus = 'CONNECTED';
       else if (!validNetwork && connections.length > 0) {
         networkStatus = 'WRONG_NETWORK';
       }
-      event.reply('config', { config });
+      setTimeout(() => {
+        event.reply(EGameBoardDisplayChannels.currentConnection, networkStatus);
+        event.reply('config', { config });
+      }, 100);
     }
   } catch (err) {
     console.log(err);
@@ -108,7 +110,7 @@ const createWindow = async () => {
   mainWindow = new BrowserWindow({
     show: false,
     width: 1400,
-    height: 600,
+    height: 900,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       sandbox: false,

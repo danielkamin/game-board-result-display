@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { ScoreBoardConfig } from '../../shared/types';
 
 type GlobalState = {
@@ -11,23 +11,37 @@ const useGlobalStore = create<GlobalState>()(
     persist(
       (set) => ({
         homeTeam: {
-          name: 'Żubry Białystok',
+          name: 'ŻUB',
           textColor: '#FFFFFF',
-          backgroundColor: '#CE4D11',
+          backgroundColor: '#000',
+          imageUrl: '',
+          description: {
+            title: '',
+            subTitle: '',
+          },
         },
         awayTeam: {
           name: '---------- ------------',
-          textColor: '#18181b',
+          textColor: '#000',
           backgroundColor: '#FFFFFF',
+          imageUrl: '',
+          description: {
+            title: '',
+            subTitle: '',
+          },
         },
         general: {
           teamsNamesFontSize: 24,
+          gameDescription: {
+            title: '',
+            subTitle: '',
+          },
         },
         saveSettings: (config) => set(() => config),
       }),
       {
         name: 'global-storage',
-        getStorage: () => sessionStorage,
+        storage: createJSONStorage(() => sessionStorage),
       }
     )
   )
