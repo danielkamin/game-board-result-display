@@ -16,29 +16,29 @@ const Team = ({
   pointsChannel,
   fontSize,
 }: Omit<TTeamComponentProps, 'description'>) => {
-  const [isAnimating, setIsAnimating] = useState(false);
-  const lastAnimationTimestamp = useRef<number>(0);
+  // const [isAnimating, setIsAnimating] = useState(false);
+  // const lastAnimationTimestamp = useRef<number>(0);
 
-  const handlePointsChange = useCallback(
-    (newPoints: string, oldPoints: string) => {
-      const numericNewPoints = parseInt(newPoints, 10);
-      const numericOldPoints = parseInt(oldPoints, 10);
-      const currentTime = Date.now();
+  // const handlePointsChange = useCallback(
+  //   (newPoints: string, oldPoints: string) => {
+  //     const numericNewPoints = parseInt(newPoints, 10);
+  //     const numericOldPoints = parseInt(oldPoints, 10);
+  //     const currentTime = Date.now();
 
-      if (
-        currentTime - lastAnimationTimestamp.current > 2000 &&
-        numericNewPoints > numericOldPoints
-      ) {
-        setIsAnimating(true);
-        lastAnimationTimestamp.current = currentTime;
+  //     if (
+  //       currentTime - lastAnimationTimestamp.current > 2000 &&
+  //       numericNewPoints > numericOldPoints
+  //     ) {
+  //       setIsAnimating(true);
+  //       lastAnimationTimestamp.current = currentTime;
 
-        setTimeout(() => {
-          setIsAnimating(false);
-        }, 1200);
-      }
-    },
-    []
-  );
+  //       setTimeout(() => {
+  //         setIsAnimating(false);
+  //       }, 1200);
+  //     }
+  //   },
+  //   []
+  // );
 
   return (
     <div
@@ -68,29 +68,7 @@ const Team = ({
       >
         {name.toUpperCase()}
       </span>
-      <Points channel={pointsChannel} onPointsChange={handlePointsChange} />
-      {isAnimating && (
-        <div className="absolute inset-0 animate-score-change">
-          <div
-            className="animate-score-change-inner"
-            style={{
-              backgroundColor,
-            }}
-          >
-            {imageUrl && (
-              <div className="absolute w-full top-1/2 -translate-y-1/2">
-                <div className="relative h-16 w-12 overflow-visible mx-auto">
-                  <img
-                    src={`file://${imageUrl}`}
-                    alt="Logo"
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-20 w-auto object-cover"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      <Points channel={pointsChannel} />
     </div>
   );
 };

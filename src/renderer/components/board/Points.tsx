@@ -4,16 +4,14 @@ import { EGameBoardDisplayChannels } from '../../../shared/enums';
 
 interface IPoints {
   channel: EGameBoardDisplayChannels;
-  onPointsChange: (newPoints: string, oldPoints: string) => void;
 }
 
-const Points: FC<IPoints> = ({ channel, onPointsChange }) => {
+const Points: FC<IPoints> = ({ channel }) => {
   const [points, setPoints] = useState('0');
   const handlePointsUpdate = useCallback((arg: unknown) => {
     try {
       const pointsData = arg as string;
       if (pointsData !== points && pointsData !== '207') {
-        onPointsChange?.(pointsData, points);
         setPoints(pointsData);
       }
     } catch (err) {
@@ -31,7 +29,7 @@ const Points: FC<IPoints> = ({ channel, onPointsChange }) => {
         window.electron.ipcRenderer.removeListener(channel, handlePointsUpdate);
       }
     };
-  }, [channel, onPointsChange, handlePointsUpdate]);
+  }, [channel, handlePointsUpdate]);
 
   return (
     <div className="text-5xl font-medium flex items-center justify-center">
