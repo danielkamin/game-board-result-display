@@ -60,7 +60,6 @@ const Settings = () => {
       awayTeam: awayTeamRef.current?.getTeamSettings(),
       general: generalSettingsRef.current?.getGeneralSettings(),
     };
-    console.log(newSettings);
     saveSettings(newSettings);
     try {
       window.electron.ipcRenderer.sendMessage('saveConfig', [newSettings]);

@@ -7,7 +7,7 @@ interface ITimeouts {
 }
 
 const TeamTimeouts: FC<ITimeouts> = ({ channel }) => {
-  const [timeouts, setTimeouts] = useState(0);
+  const [timeouts, setTimeouts] = useState(2);
   const handleTimeoutUpdate = useCallback((arg: unknown) => {
     try {
       const timeoutData = arg as number;
