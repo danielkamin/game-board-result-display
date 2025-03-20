@@ -236,8 +236,8 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate"
+      "owner": "danielkamin",
+      "repo": "game-board-result-display"
     }
   },
   "collective": {
