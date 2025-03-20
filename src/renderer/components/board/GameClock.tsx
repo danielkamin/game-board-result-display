@@ -64,12 +64,12 @@ const GameClockSeconds = () => {
 
 const GameClock: FC = () => {
   return (
-    <div className="text-4xl flex items-center justify-center flex-grow">
+    <div className="text-5xl flex items-center justify-center flex-grow">
       <span
         className="text-gray-900 font-medium text-center bg-white radius rounded-3xl flex justify-center items-center gap-2"
-        style={{ width: '150px', height: '50px' }}
+        style={{ width: '160px', height: '55px' }}
       >
-        <GameClockMinutes /> <span className="mb-1">:</span>{' '}
+        <GameClockMinutes /> <span className="mb-3">:</span>{' '}
         <GameClockSeconds />
       </span>
     </div>

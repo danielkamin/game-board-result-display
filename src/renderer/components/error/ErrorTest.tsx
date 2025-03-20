@@ -28,6 +28,7 @@ const ErrorTest: FC<ErrorTestProps> = ({
 
       return () => clearTimeout(timer);
     }
+    return () => {};
   }, [errorType, triggerErrorAfter]);
 
   // This will throw during render when shouldError is true

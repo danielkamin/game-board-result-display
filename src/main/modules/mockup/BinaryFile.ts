@@ -106,6 +106,7 @@ class BinaryMessageReader implements IMessageReader {
 }
 
 // Example usage with array methods
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function example(): Promise<void> {
   try {
     // Writing messages

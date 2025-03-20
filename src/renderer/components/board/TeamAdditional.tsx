@@ -39,7 +39,7 @@ const TeamAdditional: FC<TeamAdditionalProps> = ({
   return (
     <div
       className="block border-r border-white text-white relative overflow-hidden"
-      style={{ width: '315.5px', backgroundColor: 'rgba(0, 0, 0, 1)' }}
+      style={{ width: '340.5px', backgroundColor: '#3b3b3b' }}
     >
       {/* Kontener dla animacji przejścia */}
       <div className="transition-wrapper h-full">

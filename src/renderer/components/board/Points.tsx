@@ -25,7 +25,7 @@ const Points: FC<IPoints> = ({ channel, onPointsChange }) => {
       }
     },
     [onPointsChange]
-  ); // Usunięto points z zależności, używamy ref
+  );
 
   useEffect(() => {
     if (!window.electron?.ipcRenderer) return;
@@ -41,8 +41,8 @@ const Points: FC<IPoints> = ({ channel, onPointsChange }) => {
   }, [channel, handlePointsUpdate]);
 
   return (
-    <div className="text-5xl font-medium flex items-center justify-center">
-      <span className="text-center" style={{ width: '110px' }}>
+    <div className="text-6xl font-medium flex items-center justify-center">
+      <span className="text-center" style={{ width: '120px' }}>
         {points}
       </span>
     </div>

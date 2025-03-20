@@ -36,10 +36,10 @@ const GamePart: FC = () => {
   }, [handleGamePartUpdate]);
 
   return (
-    <div className="text-4xl flex items-center justify-center">
+    <div className="text-5xl flex items-center justify-center">
       <span
         className="text-white text-center"
-        style={{ width: '70px', height: '55px', lineHeight: '50px' }}
+        style={{ width: '85px', height: '60px', lineHeight: '55px' }}
       >
         {part}Q
       </span>

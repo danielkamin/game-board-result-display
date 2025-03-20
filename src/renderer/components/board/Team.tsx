@@ -49,16 +49,16 @@ const Team = ({
 
   return (
     <div
-      className="text-2xl flex items-center justify-between relative overflow-hidden p-2 pl-4"
+      className="flex items-center justify-between relative overflow-hidden p-2 pl-4"
       style={{
         backgroundColor,
         color: textColor,
-        width: '315px',
+        width: '340px',
       }}
     >
       {imageUrl ? (
         <div className="absolute left-4 top-1/2 -translate-y-1/2">
-          <div className="relative h-16 w-12 overflow-visible">
+          <div className="relative h-24 w-16 overflow-visible">
             <img
               src={`file://${imageUrl}`}
               alt="Logo"
@@ -68,7 +68,7 @@ const Team = ({
         </div>
       ) : null}
       <span
-        className="text-center font-medium leading-none ml-16"
+        className="text-center font-medium leading-none ml-20"
         style={{
           fontSize: `${fontSize}px`,
         }}
@@ -86,7 +86,7 @@ const Team = ({
           >
             {imageUrl && (
               <div className="absolute w-full top-1/2 -translate-y-1/2">
-                <div className="relative h-16 w-12 overflow-visible mx-auto">
+                <div className="relative h-24 w-16 overflow-visible mx-auto">
                   <img
                     src={`file://${imageUrl}`}
                     alt="Logo"

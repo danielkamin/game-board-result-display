@@ -34,10 +34,10 @@ const ShotClock: FC = () => {
   }, [handleShotClockUpdate]);
 
   return (
-    <div className="text-4xl flex items-center justify-center">
+    <div className="text-5xl flex items-center justify-center">
       <span
         className="text-white text-center overflow-hidden"
-        style={{ width: '60px', height: '55px', lineHeight: '50px' }}
+        style={{ width: '66px', height: '55px', lineHeight: '50px' }}
       >
         {seconds}
       </span>
