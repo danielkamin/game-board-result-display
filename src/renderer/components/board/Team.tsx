@@ -18,15 +18,22 @@ const Team = ({
 }: Omit<TTeamComponentProps, 'description'>) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const lastAnimationTimestamp = useRef<number>(0);
+  const isAnimatingRef = useRef(isAnimating);
+
+  useEffect(() => {
+    isAnimatingRef.current = isAnimating;
+  }, [isAnimating]);
 
   const handlePointsChange = useCallback(
     (newPoints: string, oldPoints: string) => {
+      if (isAnimatingRef.current) return;
+
       const numericNewPoints = parseInt(newPoints, 10);
       const numericOldPoints = parseInt(oldPoints, 10);
       const currentTime = Date.now();
 
       if (
-        currentTime - lastAnimationTimestamp.current > 2000 &&
+        currentTime - lastAnimationTimestamp.current > 3000 &&
         numericNewPoints > numericOldPoints
       ) {
         setIsAnimating(true);
